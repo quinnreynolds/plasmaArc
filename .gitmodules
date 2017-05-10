@@ -1,3 +1,4 @@
 [submodule "eminclude"]
 	path = eminclude
 	url = https://kittychunk@bitbucket.org/kittychunk/eminclude.git
+	branch = dev
