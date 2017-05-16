@@ -783,7 +783,7 @@ createFields.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/compressibleCreatePhi.H \
 eminclude/createFields.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createMRF.H \
-eminclude/readSolverControlsEM.H \
+eminclude/readSolverControls.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createFvOptions.H \
 eminclude/setDirectionMixedBC.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/compressibleCourantNo.H \

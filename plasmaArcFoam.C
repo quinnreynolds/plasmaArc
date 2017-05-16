@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     #include "createFields.H"
     #include "eminclude/createFields.H"
     #include "createMRF.H"
-    #include "eminclude/readSolverControlsEM.H"
+    #include "eminclude/readSolverControls.H"
     #include "createFvOptions.H"
 
     Info<< "\nInitialising surface normals and fraction tensor BCs for A...\n"

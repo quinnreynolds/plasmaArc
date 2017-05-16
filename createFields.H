@@ -107,10 +107,16 @@ IOdictionary thermoPropertiesDict
 );
 
 // LUTs for ek and QRad
-fileName ekDataFile( thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("ekLookupTable") );
+fileName ekDataFile
+(
+    thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("ekLookupTable")
+);
 interpolationTable<scalar> ekLookup(ekDataFile);
 
-fileName QRadDataFile( thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("QRadLookupTable") );
+fileName QRadDataFile
+(
+    thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("QRadLookupTable")
+);
 interpolationTable<scalar> QRadLookup(QRadDataFile);
 
 // Electron energy transport constant
