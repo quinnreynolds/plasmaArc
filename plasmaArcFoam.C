@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     #include "createRDeltaT.H"
     #include "initContinuityErrs.H"
     #include "createFields.H"
-    #include "createFieldsEM.H"
+    #include "eminclude/createFields.H"
     #include "createMRF.H"
     #include "eminclude/readSolverControlsEM.H"
     #include "createFvOptions.H"
@@ -102,6 +102,10 @@ int main(int argc, char *argv[])
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
+        //update EM transport fields and solve
+        #include "ekQradCalculate.H"
+        #include "eminclude/emEqns.H"
+
         if (pimple.nCorrPIMPLE() <= 1)
         {
             #include "rhoEqn.H"
@@ -110,10 +114,6 @@ int main(int argc, char *argv[])
         //Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            //update EM transport fields and solve
-            #include "ekQradCalculate.H"
-            #include "eminclude/emEqns.H"
-
             #include "UEqn.H"
             #include "TEqn.H"
 

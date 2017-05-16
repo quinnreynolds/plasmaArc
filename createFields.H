@@ -90,3 +90,76 @@ volScalarField dpdt
 
 Info<< "Creating field kinetic energy K\n" << endl;
 volScalarField K("K", 0.5*magSqr(U));
+
+
+// Open dictionary for reading
+
+IOdictionary thermoPropertiesDict
+(
+    IOobject
+    (
+        "thermophysicalProperties",
+        runTime.constant(),
+        mesh,
+        IOobject::MUST_READ_IF_MODIFIED,
+        IOobject::NO_WRITE
+    )
+);
+
+// LUTs for ek and QRad
+fileName ekDataFile( thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("ekLookupTable") );
+interpolationTable<scalar> ekLookup(ekDataFile);
+
+fileName QRadDataFile( thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("QRadLookupTable") );
+interpolationTable<scalar> QRadLookup(QRadDataFile);
+
+// Electron energy transport constant
+dimensionedScalar constET
+(
+    thermoPropertiesDict.subDict("EM").lookup("constET")
+);
+
+Info<< "Setting up field QRad\n" << endl;
+volScalarField QRad
+(
+    IOobject
+    (
+        "QRad",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("QRad", dimensionSet(1,-1,-3,0,0,0,0), 1.0)
+);
+
+Info<< "Setting up field QRadSp\n" << endl;
+volScalarField QRadSp
+(
+    IOobject
+    (
+        "QRadSp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("QRadSp", dimensionSet(1,-1,-3,-1,0,0,0), 1.0)
+);
+
+Info<< "Setting up field ekSp\n" << endl;
+volScalarField ekSp
+(
+    IOobject
+    (
+        "ekSp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("ekSp", dimensionSet(-1,-3,3,-1,0,2,0), 1000.)
+);

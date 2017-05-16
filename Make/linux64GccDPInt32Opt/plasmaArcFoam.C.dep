@@ -781,7 +781,7 @@ $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createRDeltaT.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/initContinuityErrs.H \
 createFields.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/compressibleCreatePhi.H \
-createFieldsEM.H \
+eminclude/createFields.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createMRF.H \
 eminclude/readSolverControlsEM.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/createFvOptions.H \
@@ -791,9 +791,9 @@ $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/setInitialDeltaT.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/readTimeControls.H \
 setRDeltaT.H \
 $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/setDeltaT.H \
-$(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/rhoEqn.H \
 ekQradCalculate.H \
 eminclude/emEqns.H \
+$(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/rhoEqn.H \
 UEqn.H \
 TEqn.H \
 pcEqn.H \
