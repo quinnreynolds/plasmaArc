@@ -34,7 +34,7 @@ Description
     Based on rhoPimpleFoam and myRhoPimpleFoam.
 
 
-Q Reynolds 2015-2017
+Q Reynolds Feb 2015
 
 \*---------------------------------------------------------------------------*/
 
@@ -49,7 +49,7 @@ Q Reynolds 2015-2017
 
 #include "directionMixedFvPatchFields.H"
 #include "zeroGradientFvPatchField.H"
-#include "uniformInterpolationTable.H"
+#include "interpolationTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

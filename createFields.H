@@ -106,48 +106,24 @@ IOdictionary thermoPropertiesDict
     )
 );
 
-
 // LUTs for ek and QRad
-// TODO switch and different read process for mixtures
-uniformInterpolationTable<scalar> ekLookup
+fileName ekDataFile
 (
-    "ekLookupTable",
-    thermoPropertiesDict.db(),
-    thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable")
+    thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("ekLookupTable")
 );
-uniformInterpolationTable<scalar> ekSpLookup
-(
-    "ekSpLookupTable",
-    thermoPropertiesDict.db(),
-    thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable")
-);
-int lutLength = ekLookup.size();
-ekSpLookup[0] = (ekLookup[1] - ekLookup[0]) / ekLookup.dx();
-ekSpLookup[lutLength-1] = (ekLookup[lutLength-1] - ekLookup[lutLength-2]) / ekLookup.dx();
-for(int n=1; n < lutLength-1; n++)
-{
-    ekSpLookup[n] = (ekLookup[n+1] - ekLookup[n-1]) / (2. * ekLookup.dx());
-}
+interpolationTable<scalar> ekLookup(ekDataFile);
 
-uniformInterpolationTable<scalar> QRadLookup
+fileName QRadDataFile
 (
-    "QRadLookupTable",
-    thermoPropertiesDict.db(),
-    thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable")
+    thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("QRadLookupTable")
 );
-uniformInterpolationTable<scalar> QRadSpLookup
+interpolationTable<scalar> QRadLookup(QRadDataFile);
+
+// Electron energy transport constant
+dimensionedScalar constET
 (
-    "QRadSpLookupTable",
-    thermoPropertiesDict.db(),
-    thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable")
+    thermoPropertiesDict.subDict("EM").lookup("constET")
 );
-lutLength = QRadLookup.size();
-QRadSpLookup[0] = (QRadLookup[1] - QRadLookup[0]) / QRadLookup.dx();
-QRadSpLookup[lutLength-1] = (QRadLookup[lutLength-1] - QRadLookup[lutLength-2]) / QRadLookup.dx();
-for(int n=1; n < lutLength-1; n++)
-{
-    QRadSpLookup[n] = (QRadLookup[n+1] - QRadLookup[n-1]) / (2. * QRadLookup.dx());
-}
 
 Info<< "Setting up field QRad\n" << endl;
 volScalarField QRad
