@@ -65,15 +65,15 @@ int main(int argc, char *argv[])
     #include "createRDeltaT.H"
     #include "initContinuityErrs.H"
     #include "createFields.H"
-    #include "eminclude/createFields.H"
+    #include "../eminclude/createFields.H"
     #include "createMRF.H"
-    #include "eminclude/readSolverControls.H"
+    #include "../eminclude/readSolverControls.H"
     #include "createFvOptions.H"
 
     Info<< "\nInitialising surface normals and fraction tensor BCs for A...\n"
         << endl;
 
-    #include "eminclude/setDirectionMixedBC.H"
+    #include "../eminclude/setDirectionMixedBC.H"
 
     if (!LTS)
     {
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         #include "readTimeControls.H"
         if (LTS)
         {
-            #include "setRDeltaT.H"
+            #include "../setRDeltaT.H"
         }
         else
         {
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 
         //update EM transport fields and solve
         #include "ekQradCalculate.H"
-        #include "eminclude/emEqns.H"
+        #include "../eminclude/emEqns.H"
 
         if (pimple.nCorrPIMPLE() <= 1)
         {
@@ -114,19 +114,19 @@ int main(int argc, char *argv[])
         //Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            #include "UEqn.H"
-            #include "TEqn.H"
+            #include "../UEqn.H"
+            #include "../TEqn.H"
 
             //Pressure corrector loop
             while (pimple.correct())
             {
                 if (pimple.consistent())
                 {
-                    #include "pcEqn.H"
+                    #include "../pcEqn.H"
                 }
                 else
                 {
-                    #include "pEqn.H"
+                    #include "../pEqn.H"
                 }
             }
 
