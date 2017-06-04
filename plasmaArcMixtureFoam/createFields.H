@@ -1,12 +1,5 @@
 Info<< "Reading thermophysical properties\n" << endl;
 
-// autoPtr<rhoThermo> rThermo
-// (
-//     rhoThermo::New(mesh)
-// );
-// rhoThermo& thermo = rThermo();
-// thermo.validate(args.executable(), "h", "e");
-
 autoPtr<rhoReactionThermo> rrThermo
 (
     rhoReactionThermo::New(mesh)
