@@ -119,12 +119,6 @@ fileName QRadDataFile
 );
 interpolationTable<scalar> QRadLookup(QRadDataFile);
 
-// Electron energy transport constant
-dimensionedScalar constET
-(
-    thermoPropertiesDict.subDict("EM").lookup("constET")
-);
-
 Info<< "Setting up field QRad\n" << endl;
 volScalarField QRad
 (

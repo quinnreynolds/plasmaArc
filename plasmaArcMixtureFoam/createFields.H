@@ -122,24 +122,29 @@ IOdictionary thermoPropertiesDict
     )
 );
 
+
 // LUTs for ek and QRad
-fileName ekDataFile
-(
-    thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("ekLookupTable")
-);
-interpolationTable<scalar> ekLookup(ekDataFile);
+List< interpolationTable<scalar> > ekLookupList;
+List< interpolationTable<scalar> > QRadLookupList;
+forAll(plasmaSpeciesTable, i)
+{
+    fileName ekDataFile
+    (
+        thermoPropertiesDict.subDict(plasmaSpeciesTable[i]).subDict("transport").lookup("ekLookupTable")
+    );
+    interpolationTable<scalar> ekLookupTemp(ekDataFile);
+    ekLookupList.append(ekLookupTemp);
 
-fileName QRadDataFile
-(
-    thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("QRadLookupTable")
-);
-interpolationTable<scalar> QRadLookup(QRadDataFile);
+    fileName QRadDataFile
+    (
+        thermoPropertiesDict.subDict(plasmaSpeciesTable[i]).subDict("transport").lookup("QRadLookupTable")
+    );
+    interpolationTable<scalar> QRadLookupTemp(QRadDataFile);
+    QRadLookupList.append(QRadLookupTemp);
+}
+interpolationTable<scalar> ekLookup(ekLookupList[0]);
+interpolationTable<scalar> QRadLookup(QRadLookupList[0]);
 
-// Electron energy transport constant
-dimensionedScalar constET
-(
-    thermoPropertiesDict.subDict("EM").lookup("constET")
-);
 
 Info<< "Setting up field QRad\n" << endl;
 volScalarField QRad
