@@ -1,16 +1,32 @@
 Info<< "Reading thermophysical properties\n" << endl;
 
-autoPtr<rhoThermo> rThermo
+// autoPtr<rhoThermo> rThermo
+// (
+//     rhoThermo::New(mesh)
+// );
+// rhoThermo& thermo = rThermo();
+// thermo.validate(args.executable(), "h", "e");
+
+autoPtr<rhoReactionThermo> rrThermo
 (
-    rhoThermo::New(mesh)
+    rhoReactionThermo::New(mesh)
 );
-rhoThermo& thermo = rThermo();
+
+rhoReactionThermo& thermo = rrThermo();
 thermo.validate(args.executable(), "h", "e");
 
+basicMultiComponentMixture& composition = thermo.composition();
+const speciesTable& plasmaSpeciesTable = composition.species();
+PtrList<volScalarField>& Y = composition.Y();
 volScalarField& he = thermo.he();
 volScalarField& T = thermo.T();
 volScalarField& p = thermo.p();
 const volScalarField& psi = thermo.psi();
+
+forAll(plasmaSpeciesTable, i)
+{
+    Info<< "Component " << i << ": " << plasmaSpeciesTable[i] << nl;
+}
 
 volScalarField rho
 (

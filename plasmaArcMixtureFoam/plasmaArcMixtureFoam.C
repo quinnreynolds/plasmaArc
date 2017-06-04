@@ -22,24 +22,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    plasmaArcFoam
+    plasmaArcMixtureFoam
 
 Description
     Transient MHD solver for laminar or turbulent flow of compressible or
-    incompressible, non-isochoric plasma fluids.
+    incompressible, non-isochoric plasma fluids. Version for plasma mixtures.
 
     Uses the flexible PIMPLE (PISO-SIMPLE) solution for time-resolved and
     pseudo-transient simulations.
 
-    Based on rhoPimpleFoam and myRhoPimpleFoam.
-
-
-Q Reynolds Feb 2015
+Q Reynolds 2015-2017
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "rhoThermo.H"
+#include "rhoReactionThermo.H"
 #include "turbulentFluidThermoModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
