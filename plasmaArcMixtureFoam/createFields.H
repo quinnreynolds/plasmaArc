@@ -135,8 +135,6 @@ forAll(plasmaSpeciesTable, i)
     interpolationTable<scalar> QRadLookupTemp(QRadDataFile);
     QRadLookupList.append(QRadLookupTemp);
 }
-interpolationTable<scalar> ekLookup(ekLookupList[0]);
-interpolationTable<scalar> QRadLookup(QRadLookupList[0]);
 
 
 Info<< "Setting up field QRad\n" << endl;
