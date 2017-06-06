@@ -1,4 +1,5 @@
 //internal field update
+
 forAll(QRad(),cellI)
 {
     scalar QRadTemp = 0.;

@@ -51,6 +51,8 @@ Q Reynolds Feb 2015
 #include "zeroGradientFvPatchField.H"
 #include "interpolationTable.H"
 
+#include "scalarLookup.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])

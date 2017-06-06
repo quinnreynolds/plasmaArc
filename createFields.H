@@ -106,18 +106,30 @@ IOdictionary thermoPropertiesDict
     )
 );
 
-// LUTs for ek and QRad
-fileName ekDataFile
-(
-    thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("ekLookupTable")
-);
-interpolationTable<scalar> ekLookup(ekDataFile);
 
-fileName QRadDataFile
-(
-    thermoPropertiesDict.subDict("mixture").subDict("transport").lookup("QRadLookupTable")
-);
-interpolationTable<scalar> QRadLookup(QRadDataFile);
+// LUTs for ek and QRad
+scalar QRadStartT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("startT")));
+scalar QRadDeltaT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("dT")));
+List<scalar> QRadData(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("dataTable"));
+List<scalar> QRadSpData(QRadData);
+QRadSpData[0] = (QRadData[1] - QRadData[0]) / QRadDeltaT;
+QRadSpData[QRadSpData.size()-1] = (QRadData[QRadSpData.size()-1] - QRadData[QRadSpData.size()-2]) / QRadDeltaT;
+for(label dataI = 1; dataI < QRadSpData.size()-1; dataI++)
+{
+    QRadSpData[dataI] = (QRadData[dataI+1] - QRadData[dataI-1]) / (2. * QRadDeltaT);
+}
+
+scalar ekStartT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("startT")));
+scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("dT")));
+List<scalar> ekData(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("dataTable"));
+List<scalar> ekSpData(ekData);
+ekSpData[0] = (ekData[1] - ekData[0]) / ekDeltaT;
+ekSpData[ekSpData.size()-1] = (ekData[ekSpData.size()-1] - ekData[ekSpData.size()-2]) / ekDeltaT;
+for(label dataI = 1; dataI < ekSpData.size()-1; dataI++)
+{
+    ekSpData[dataI] = (ekData[dataI+1] - ekData[dataI-1]) / (2. * ekDeltaT);
+}
+
 
 Info<< "Setting up field QRad\n" << endl;
 volScalarField QRad
