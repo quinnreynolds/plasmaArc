@@ -120,11 +120,11 @@ IOdictionary thermoPropertiesDict
 // NB assumes all LUTs are same length and keyed the same
 
 scalar ekStartT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("ekLookupTable").lookup("startT")));
-scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("ekLookupTable").lookup("dT")));
+scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("ekLookupTable").lookup("deltaT")));
 List< List<scalar> > ekDataList;
 List< List<scalar> > ekSpDataList;
 scalar QRadStartT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("QRadLookupTable").lookup("startT")));
-scalar QRadDeltaT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("QRadLookupTable").lookup("dT")));
+scalar QRadDeltaT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("QRadLookupTable").lookup("deltaT")));
 List< List<scalar> > QRadDataList;
 List< List<scalar> > QRadSpDataList;
 
