@@ -9,13 +9,13 @@ forAll(QRad(),cellI)
     forAll(plasmaSpeciesTable, speciesI)
     {
         QRadTemp += Y[speciesI].ref()[cellI]
-            * QRadLookupList[speciesI](T.ref()[cellI]);
+            * scalarLookup(T.ref()[cellI], QRadStartT, QRadDeltaT, QRadDataList[speciesI]);
         ekTemp += Y[speciesI].ref()[cellI]
-            * ekLookupList[speciesI](T.ref()[cellI]);
+            * scalarLookup(T.ref()[cellI], ekStartT, ekDeltaT, ekDataList[speciesI]);
         QRadSpTemp += Y[speciesI].ref()[cellI]
-            * QRadLookupList[speciesI].rateOfChange(T.ref()[cellI]);
+            * scalarLookup(T.ref()[cellI], QRadStartT, QRadDeltaT, QRadSpDataList[speciesI]);
         ekSpTemp += Y[speciesI].ref()[cellI]
-            * ekLookupList[speciesI].rateOfChange(T.ref()[cellI]);
+            * scalarLookup(T.ref()[cellI], ekStartT, ekDeltaT, ekSpDataList[speciesI]);
     }
     QRad.ref()[cellI] = QRadTemp;
     ek.ref()[cellI] = ekTemp;
@@ -35,11 +35,11 @@ forAll(QRad.boundaryField(),patchI) {
         forAll(plasmaSpeciesTable, speciesI)
         {
             QRadTemp += Y[speciesI].boundaryFieldRef()[patchI][cellI]
-                * QRadLookupList[speciesI](T.boundaryFieldRef()[patchI][cellI]);
+                * scalarLookup(T.boundaryFieldRef()[patchI][cellI], QRadStartT, QRadDeltaT, QRadDataList[speciesI]);
             QRadSpTemp += Y[speciesI].boundaryFieldRef()[patchI][cellI]
-                * QRadLookupList[speciesI].rateOfChange(T.boundaryFieldRef()[patchI][cellI]);
+                * scalarLookup(T.boundaryFieldRef()[patchI][cellI], QRadStartT, QRadDeltaT, QRadSpDataList[speciesI]);
             ekSpTemp += Y[speciesI].boundaryFieldRef()[patchI][cellI]
-                * ekLookupList[speciesI].rateOfChange(T.boundaryFieldRef()[patchI][cellI]);
+                * scalarLookup(T.boundaryFieldRef()[patchI][cellI], ekStartT, ekDeltaT, ekSpDataList[speciesI]);
         }
         QRad.boundaryFieldRef()[patchI][cellI] = QRadTemp;
         QRadSp.boundaryFieldRef()[patchI][cellI] = QRadSpTemp;

@@ -780,6 +780,7 @@ $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/tableReader.C \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/interpolationTable.C \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/openFoamTableReader.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/openFoamTableReader.C \
+../scalarLookup.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/setRootCase.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/createTime.H \
 $(WM_PROJECT_DIR)/src/OpenFOAM/lnInclude/createMesh.H \

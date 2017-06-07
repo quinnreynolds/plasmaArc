@@ -117,23 +117,40 @@ IOdictionary thermoPropertiesDict
 
 
 // LUTs for ek and QRad
-List< interpolationTable<scalar> > ekLookupList;
-List< interpolationTable<scalar> > QRadLookupList;
-forAll(plasmaSpeciesTable, i)
-{
-    fileName ekDataFile
-    (
-        thermoPropertiesDict.subDict(plasmaSpeciesTable[i]).subDict("transport").lookup("ekLookupTable")
-    );
-    interpolationTable<scalar> ekLookupTemp(ekDataFile);
-    ekLookupList.append(ekLookupTemp);
+// NB assumes all LUTs are same length and keyed the same
 
-    fileName QRadDataFile
-    (
-        thermoPropertiesDict.subDict(plasmaSpeciesTable[i]).subDict("transport").lookup("QRadLookupTable")
-    );
-    interpolationTable<scalar> QRadLookupTemp(QRadDataFile);
-    QRadLookupList.append(QRadLookupTemp);
+scalar ekStartT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("ekLookupTable").lookup("startT")));
+scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("ekLookupTable").lookup("dT")));
+List< List<scalar> > ekDataList;
+List< List<scalar> > ekSpDataList;
+scalar QRadStartT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("QRadLookupTable").lookup("startT")));
+scalar QRadDeltaT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("QRadLookupTable").lookup("dT")));
+List< List<scalar> > QRadDataList;
+List< List<scalar> > QRadSpDataList;
+
+forAll(plasmaSpeciesTable, speciesI)
+{
+    List<scalar> myQRadData(thermoPropertiesDict.subDict(plasmaSpeciesTable[speciesI]).subDict("transport").subDict("QRadLookupTable").lookup("dataTable"));
+    List<scalar> myQRadSpData(myQRadData);
+    myQRadSpData[0] = (myQRadData[1] - myQRadData[0]) / QRadDeltaT;
+    myQRadSpData[myQRadSpData.size()-1] = (myQRadData[myQRadSpData.size()-1] - myQRadData[myQRadSpData.size()-2]) / QRadDeltaT;
+    for(label dataI = 1; dataI < myQRadSpData.size()-1; dataI++)
+    {
+        myQRadSpData[dataI] = (myQRadData[dataI+1] - myQRadData[dataI-1]) / (2. * QRadDeltaT);
+    }
+    QRadDataList.append(myQRadData);
+    QRadSpDataList.append(myQRadSpData);
+
+    List<scalar> myEkData(thermoPropertiesDict.subDict(plasmaSpeciesTable[speciesI]).subDict("transport").subDict("ekLookupTable").lookup("dataTable"));
+    List<scalar> myEkSpData(myEkData);
+    myEkSpData[0] = (myEkData[1] - myEkData[0]) / ekDeltaT;
+    myEkSpData[myEkSpData.size()-1] = (myEkData[myEkSpData.size()-1] - myEkData[myEkSpData.size()-2]) / ekDeltaT;
+    for(label dataI = 1; dataI < myEkSpData.size()-1; dataI++)
+    {
+        myEkSpData[dataI] = (myEkData[dataI+1] - myEkData[dataI-1]) / (2. * ekDeltaT);
+    }
+    ekDataList.append(myEkData);
+    ekSpDataList.append(myEkSpData);
 }
 
 
