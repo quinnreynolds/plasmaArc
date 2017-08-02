@@ -1,4 +1,4 @@
 plasmaArcFoam.C
 
-EXE = $(FOAM_USER_APPBIN)/plasmaArcFoam
+EXE = $(FOAM_USER_APPBIN)/plasmaArcFoam-dev
 

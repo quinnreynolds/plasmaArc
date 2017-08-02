@@ -3,7 +3,7 @@
     volScalarField qSourceSc = (j & j) / ek - QRad - qSourceSp * T;
 
     surfaceScalarField electronTransportPhi
-        = constET * linearInterpolate(j) & mesh.Sf();
+        = constantET * linearInterpolate(j) & mesh.Sf();
 
     fvScalarMatrix TEqn
     (
