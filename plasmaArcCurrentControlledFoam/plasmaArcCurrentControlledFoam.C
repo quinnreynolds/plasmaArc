@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
             << max(p).value() << " Pa" << nl;
 
         Info<< "Voltage = " << max(ePot).value() << " V, "
-            << "Current = " << furnaceCurrent << "A, "
+            << "Current = " << furnaceCurrent << " A, "
             << "Temperature = " << max(T).value() << " K, "
             << "|U| = " << max(mag(U)).value() << " m/s"
             << nl;
