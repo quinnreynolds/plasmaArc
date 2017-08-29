@@ -1,10 +1,10 @@
 //internal field update
 forAll(QRad(),cellI)
 {
-    QRad.ref()[cellI] = QRadLookup(T.ref()[cellI]);
-    ek.ref()[cellI] = ekLookup(T.ref()[cellI]);
-    QRadSp.ref()[cellI] = QRadLookup.rateOfChange(T.ref()[cellI]);
-    ekSp.ref()[cellI] = ekLookup.rateOfChange(T.ref()[cellI]);
+    QRad.ref()[cellI] = scalarLookup(T.ref()[cellI], QRadStartT, QRadDeltaT, QRadData);
+    ek.ref()[cellI] = scalarLookup(T.ref()[cellI], ekStartT, ekDeltaT, ekData);
+    QRadSp.ref()[cellI] = scalarLookup(T.ref()[cellI], QRadStartT, QRadDeltaT, QRadSpData);
+    ekSp.ref()[cellI] = scalarLookup(T.ref()[cellI], ekStartT, ekDeltaT, ekSpData);
 }
 
 ek.correctBoundaryConditions();
@@ -14,10 +14,10 @@ forAll(QRad.boundaryField(),patchI) {
     forAll(QRad.boundaryFieldRef()[patchI],cellI)
     {
         QRad.boundaryFieldRef()[patchI][cellI] =
-            QRadLookup(T.boundaryFieldRef()[patchI][cellI]);
+            scalarLookup(T.boundaryFieldRef()[patchI][cellI], QRadStartT, QRadDeltaT, QRadData);
         QRadSp.boundaryFieldRef()[patchI][cellI] =
-            QRadLookup.rateOfChange(T.boundaryFieldRef()[patchI][cellI]);
+            scalarLookup(T.boundaryFieldRef()[patchI][cellI], QRadStartT, QRadDeltaT, QRadSpData);
         ekSp.boundaryFieldRef()[patchI][cellI] =
-            ekLookup.rateOfChange(T.boundaryFieldRef()[patchI][cellI]);
+            scalarLookup(T.boundaryFieldRef()[patchI][cellI], ekStartT, ekDeltaT, ekSpData);
     }
 }

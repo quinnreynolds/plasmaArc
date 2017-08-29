@@ -1,16 +1,25 @@
 Info<< "Reading thermophysical properties\n" << endl;
 
-autoPtr<rhoThermo> rThermo
+autoPtr<rhoReactionThermo> rrThermo
 (
-    rhoThermo::New(mesh)
+    rhoReactionThermo::New(mesh)
 );
-rhoThermo& thermo = rThermo();
+
+rhoReactionThermo& thermo = rrThermo();
 thermo.validate(args.executable(), "h", "e");
 
+basicMultiComponentMixture& composition = thermo.composition();
+const speciesTable& plasmaSpeciesTable = composition.species();
+PtrList<volScalarField>& Y = composition.Y();
 volScalarField& he = thermo.he();
 volScalarField& T = thermo.T();
 volScalarField& p = thermo.p();
 const volScalarField& psi = thermo.psi();
+
+forAll(plasmaSpeciesTable, i)
+{
+    Info<< "Component " << i << ": " << plasmaSpeciesTable[i] << nl;
+}
 
 volScalarField rho
 (
@@ -108,26 +117,40 @@ IOdictionary thermoPropertiesDict
 
 
 // LUTs for ek and QRad
-scalar QRadStartT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("startT")));
-scalar QRadDeltaT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("deltaT")));
-List<scalar> QRadData(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("dataTable"));
-List<scalar> QRadSpData(QRadData);
-QRadSpData[0] = (QRadData[1] - QRadData[0]) / QRadDeltaT;
-QRadSpData[QRadSpData.size()-1] = (QRadData[QRadSpData.size()-1] - QRadData[QRadSpData.size()-2]) / QRadDeltaT;
-for(label dataI = 1; dataI < QRadSpData.size()-1; dataI++)
-{
-    QRadSpData[dataI] = (QRadData[dataI+1] - QRadData[dataI-1]) / (2. * QRadDeltaT);
-}
+// NB assumes all LUTs are same length and keyed the same
 
-scalar ekStartT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("startT")));
-scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("deltaT")));
-List<scalar> ekData(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("dataTable"));
-List<scalar> ekSpData(ekData);
-ekSpData[0] = (ekData[1] - ekData[0]) / ekDeltaT;
-ekSpData[ekSpData.size()-1] = (ekData[ekSpData.size()-1] - ekData[ekSpData.size()-2]) / ekDeltaT;
-for(label dataI = 1; dataI < ekSpData.size()-1; dataI++)
+scalar ekStartT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("ekLookupTable").lookup("startT")));
+scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("ekLookupTable").lookup("deltaT")));
+List< List<scalar> > ekDataList;
+List< List<scalar> > ekSpDataList;
+scalar QRadStartT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("QRadLookupTable").lookup("startT")));
+scalar QRadDeltaT(readScalar(thermoPropertiesDict.subDict(plasmaSpeciesTable[0]).subDict("transport").subDict("QRadLookupTable").lookup("deltaT")));
+List< List<scalar> > QRadDataList;
+List< List<scalar> > QRadSpDataList;
+
+forAll(plasmaSpeciesTable, speciesI)
 {
-    ekSpData[dataI] = (ekData[dataI+1] - ekData[dataI-1]) / (2. * ekDeltaT);
+    List<scalar> myQRadData(thermoPropertiesDict.subDict(plasmaSpeciesTable[speciesI]).subDict("transport").subDict("QRadLookupTable").lookup("dataTable"));
+    List<scalar> myQRadSpData(myQRadData);
+    myQRadSpData[0] = (myQRadData[1] - myQRadData[0]) / QRadDeltaT;
+    myQRadSpData[myQRadSpData.size()-1] = (myQRadData[myQRadSpData.size()-1] - myQRadData[myQRadSpData.size()-2]) / QRadDeltaT;
+    for(label dataI = 1; dataI < myQRadSpData.size()-1; dataI++)
+    {
+        myQRadSpData[dataI] = (myQRadData[dataI+1] - myQRadData[dataI-1]) / (2. * QRadDeltaT);
+    }
+    QRadDataList.append(myQRadData);
+    QRadSpDataList.append(myQRadSpData);
+
+    List<scalar> myEkData(thermoPropertiesDict.subDict(plasmaSpeciesTable[speciesI]).subDict("transport").subDict("ekLookupTable").lookup("dataTable"));
+    List<scalar> myEkSpData(myEkData);
+    myEkSpData[0] = (myEkData[1] - myEkData[0]) / ekDeltaT;
+    myEkSpData[myEkSpData.size()-1] = (myEkData[myEkSpData.size()-1] - myEkData[myEkSpData.size()-2]) / ekDeltaT;
+    for(label dataI = 1; dataI < myEkSpData.size()-1; dataI++)
+    {
+        myEkSpData[dataI] = (myEkData[dataI+1] - myEkData[dataI-1]) / (2. * ekDeltaT);
+    }
+    ekDataList.append(myEkData);
+    ekSpDataList.append(myEkSpData);
 }
 
 
