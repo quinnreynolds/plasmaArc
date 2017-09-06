@@ -1,4 +1,6 @@
 {
+    volScalarField& he = thermo.he();
+
     volScalarField qSourceSp = -ekSp * (j & j) / (ek * ek) - QRadSp;
     volScalarField qSourceSc = (j & j) / ek - QRad - qSourceSp * T;
 
@@ -18,7 +20,8 @@
             ? fvc::div(fvc::absolute(phi / fvc::interpolate(rho), U), p)
             : -dpdt
         )
-      - fvm::laplacian(thermo.alphaEff(turbulence->mut())*thermo.Cp(), T)
+      //- fvm::laplacian(thermo.alphaEff(turbulence->mut())*thermo.Cp(), T)
+      - fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
       - fvm::Sp(qSourceSp, T)
       - qSourceSc
     );
@@ -27,6 +30,5 @@
 
     TEqn.solve();
 
-    he = thermo.he(p, T);
     thermo.correct();
 }

@@ -39,10 +39,11 @@ Q Reynolds Feb 2015
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "rhoThermo.H"
+#include "fluidThermo.H"
 #include "turbulentFluidThermoModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
+#include "pressureControl.H"
 #include "fvOptions.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
@@ -57,18 +58,17 @@ Q Reynolds Feb 2015
 
 int main(int argc, char *argv[])
 {
+    #include "postProcess.H"
+
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
-
-    pimpleControl pimple(mesh);
-
+    #include "createControl.H"
     #include "createTimeControls.H"
     #include "createRDeltaT.H"
     #include "initContinuityErrs.H"
     #include "createFields.H"
     #include "eminclude/createFields.H"
-    #include "createMRF.H"
     #include "eminclude/readSolverControls.H"
     #include "createFvOptions.H"
 
@@ -76,6 +76,8 @@ int main(int argc, char *argv[])
         << endl;
 
     #include "eminclude/setDirectionMixedBC.H"
+
+    turbulence->validate();
 
     if (!LTS)
     {
@@ -137,6 +139,8 @@ int main(int argc, char *argv[])
                 turbulence->correct();
             }
         }
+
+        rho = thermo.rho()
 
         runTime.write();
 
