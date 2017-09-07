@@ -31,10 +31,10 @@ Description
     Uses the flexible PIMPLE (PISO-SIMPLE) solution for time-resolved and
     pseudo-transient simulations.
 
-    Based on rhoPimpleFoam and myRhoPimpleFoam.
+    Based on rhoPimpleFoam.
 
 
-Q Reynolds Feb 2015
+Q Reynolds 2015-2017
 
 \*---------------------------------------------------------------------------*/
 
@@ -59,7 +59,6 @@ Q Reynolds Feb 2015
 int main(int argc, char *argv[])
 {
     #include "postProcess.H"
-
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"

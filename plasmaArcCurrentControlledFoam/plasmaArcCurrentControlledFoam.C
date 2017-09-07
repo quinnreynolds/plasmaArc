@@ -33,18 +33,19 @@ Description
     Uses the flexible PIMPLE (PISO-SIMPLE) solution for time-resolved and
     pseudo-transient simulations.
 
-    Based on rhoPimpleFoam and myRhoPimpleFoam.
+    Based on rhoPimpleFoam.
 
 
-Q Reynolds Feb 2015
+Q Reynolds 2015-2017
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "rhoThermo.H"
+#include "fluidThermo.H"
 #include "turbulentFluidThermoModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
+#include "pressureControl.H"
 #include "fvOptions.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
@@ -59,16 +60,16 @@ Q Reynolds Feb 2015
 
 int main(int argc, char *argv[])
 {
+    #include "postProcess.H"
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
-
-    pimpleControl pimple(mesh);
-
+    #include "createControl.H"
     #include "createTimeControls.H"
-    #include "createRDeltaT.H"
     #include "initContinuityErrs.H"
+    #include "createRDeltaT.H"
     #include "../createFields.H"
+    #include "createMRF.H"
     #include "../emincludecc/createFields.H"
     #include "../emincludecc/createPowerSupply.H"
     #include "createMRF.H"
