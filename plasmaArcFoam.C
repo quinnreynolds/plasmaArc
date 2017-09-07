@@ -127,10 +127,12 @@ int main(int argc, char *argv[])
             {
                 if (pimple.consistent())
                 {
+                    Info<< "running pc include" << nl;
                     #include "pcEqn.H"
                 }
                 else
                 {
+                    Info<< "running p include" << nl;
                     #include "pEqn.H"
                 }
             }
