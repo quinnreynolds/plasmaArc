@@ -72,7 +72,6 @@ int main(int argc, char *argv[])
     #include "createMRF.H"
     #include "../emincludecc/createFields.H"
     #include "../emincludecc/createPowerSupply.H"
-    #include "createMRF.H"
     #include "../emincludecc/readSolverControls.H"
     #include "createFvOptions.H"
 
