@@ -65,9 +65,10 @@ int main(int argc, char *argv[])
     #include "createMesh.H"
     #include "createControl.H"
     #include "createTimeControls.H"
-    #include "createRDeltaT.H"
     #include "initContinuityErrs.H"
+    #include "createRDeltaT.H"
     #include "createFields.H"
+    #include "createMRF.H"
     #include "eminclude/createFields.H"
     #include "eminclude/readSolverControls.H"
     #include "createFvOptions.H"
@@ -140,7 +141,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        rho = thermo.rho()
+        rho = thermo.rho();
 
         runTime.write();
 

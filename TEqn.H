@@ -26,9 +26,13 @@
       - qSourceSc
     );
 
+    Info<< max(thermo.Cp()) << nl;
+
     TEqn.relax();
 
     TEqn.solve();
+
+    he = thermo.he(p, T);
 
     thermo.correct();
 }
