@@ -20,13 +20,10 @@
             ? fvc::div(fvc::absolute(phi / fvc::interpolate(rho), U), p)
             : -dpdt
         )
-      //- fvm::laplacian(thermo.alphaEff(turbulence->mut())*thermo.Cp(), T)
       - fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
       - fvm::Sp(qSourceSp, T)
       - qSourceSc
     );
-
-    Info<< max(thermo.Cp()) << nl;
 
     TEqn.relax();
 
