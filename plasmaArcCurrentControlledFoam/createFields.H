@@ -1,0 +1,178 @@
+Info<< "Reading thermophysical properties\n" << endl;
+
+autoPtr<fluidThermo> pThermo
+(
+    fluidThermo::New(mesh)
+);
+fluidThermo& thermo = pThermo();
+thermo.validate(args.executable(), "h", "e");
+
+//volScalarField& he = thermo.he();
+volScalarField& T = thermo.T();
+volScalarField& p = thermo.p();
+const volScalarField& psi = thermo.psi();
+
+Info<< "Creating field references" << nl;
+Info<< "    T field max: " << max(T).value() << nl;
+Info<< "    p field max: " << max(p).value() << nl;
+Info<< "    psi field max: " << max(psi).value() << nl << nl;
+
+volScalarField rho
+(
+    IOobject
+    (
+        "rho",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    thermo.rho()
+);
+
+Info<< "Reading field U\n" << endl;
+volVectorField U
+(
+    IOobject
+    (
+        "U",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh
+);
+
+#include "compressibleCreatePhi.H"
+
+pressureControl pressureControl(p, rho, pimple.dict(), false);
+
+mesh.setFluxRequired(p.name());
+
+Info<< "Creating turbulence model\n" << endl;
+autoPtr<compressible::turbulenceModel> turbulence
+(
+    compressible::turbulenceModel::New
+    (
+        rho,
+        U,
+        phi,
+        thermo
+    )
+);
+
+Info<< "Creating field dpdt\n" << endl;
+volScalarField dpdt
+(
+    IOobject
+    (
+        "dpdt",
+        runTime.timeName(),
+        mesh
+    ),
+    mesh,
+    dimensionedScalar("dpdt", p.dimensions()/dimTime, 0)
+);
+
+Info<< "Creating field kinetic energy K\n" << endl;
+volScalarField K("K", 0.5*magSqr(U));
+
+
+// Open dictionary for reading
+
+IOdictionary thermoPropertiesDict
+(
+    IOobject
+    (
+        "thermophysicalProperties",
+        runTime.constant(),
+        mesh,
+        IOobject::MUST_READ_IF_MODIFIED,
+        IOobject::NO_WRITE
+    )
+);
+
+Info<< "Creating LUTs for QRad and ek" << nl;
+
+// LUTs for ek and QRad
+scalar QRadStartT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("startT")));
+
+scalar QRadDeltaT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("deltaT")));
+
+List<scalar> QRadData(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("dataTable"));
+
+List<scalar> QRadSpData(QRadData);
+
+QRadSpData[0] = (QRadData[1] - QRadData[0]) / QRadDeltaT;
+QRadSpData[QRadSpData.size()-1] = (QRadData[QRadSpData.size()-1] - QRadData[QRadSpData.size()-2]) / QRadDeltaT;
+for(label dataI = 1; dataI < QRadSpData.size()-1; dataI++)
+{
+    QRadSpData[dataI] = (QRadData[dataI+1] - QRadData[dataI-1]) / (2. * QRadDeltaT);
+}
+
+Info<< "    QRad temperature range: " << QRadStartT << ", "
+    << QRadStartT + QRadDeltaT * (QRadData.size() - 1) << nl;
+
+scalar ekStartT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("startT")));
+
+scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("deltaT")));
+
+List<scalar> ekData(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("dataTable"));
+
+List<scalar> ekSpData(ekData);
+
+ekSpData[0] = (ekData[1] - ekData[0]) / ekDeltaT;
+ekSpData[ekSpData.size()-1] = (ekData[ekSpData.size()-1] - ekData[ekSpData.size()-2]) / ekDeltaT;
+for(label dataI = 1; dataI < ekSpData.size()-1; dataI++)
+{
+    ekSpData[dataI] = (ekData[dataI+1] - ekData[dataI-1]) / (2. * ekDeltaT);
+}
+
+Info<< "    ek temperature range: " << QRadStartT << ", "
+    << ekStartT + ekDeltaT * (ekData.size() - 1) << nl << nl;
+
+Info<< "Setting up field QRad\n" << endl;
+volScalarField QRad
+(
+    IOobject
+    (
+        "QRad",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("QRad", dimensionSet(1,-1,-3,0,0,0,0), 1.0)
+);
+
+Info<< "Setting up field QRadSp\n" << endl;
+volScalarField QRadSp
+(
+    IOobject
+    (
+        "QRadSp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("QRadSp", dimensionSet(1,-1,-3,-1,0,0,0), 1.0)
+);
+
+Info<< "Setting up field ekSp\n" << endl;
+volScalarField ekSp
+(
+    IOobject
+    (
+        "ekSp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("ekSp", dimensionSet(-1,-3,3,-1,0,2,0), 1000.)
+);

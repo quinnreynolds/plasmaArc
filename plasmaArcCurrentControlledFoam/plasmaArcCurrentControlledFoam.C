@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     #include "createTimeControls.H"
     #include "initContinuityErrs.H"
     #include "createRDeltaT.H"
-    #include "../createFields.H"
+    #include "createFields.H"
     #include "createMRF.H"
     #include "../emincludecc/createFields.H"
     #include "../emincludecc/createPowerSupply.H"
