@@ -142,12 +142,13 @@ int main(int argc, char *argv[])
         }
 
         runTime.write();
+        #include "../emincludecc/writePsuState.H"
 
         Info<< "Pressure min/max = " << min(p).value() << " / "
             << max(p).value() << " Pa" << nl;
 
         Info<< "Voltage = " << max(ePot).value() << " V, "
-            << "Current = " << furnaceCurrent << " A, "
+            << "Current = " << psuCurrent << " A, "
             << "Temperature = " << max(T).value() << " K, "
             << "|U| = " << max(mag(U)).value() << " m/s"
             << nl;
