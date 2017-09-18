@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
         }
 
         runTime.write();
-        #include "../emincludecc/writePsuState.H"
+        // #include "../emincludecc/writePsuState.H"
 
         Info<< "Temperature = " << max(T).value() << " K, "
             << "|U| = " << max(mag(U)).value() << " m/s" << nl;
