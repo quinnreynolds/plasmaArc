@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
         Info<< "Temperature = " << max(T).value() << " K, "
             << "|U| = " << max(mag(U)).value() << " m/s" << nl;
         Info<< "Arc Voltage = " << max(ePot).value() << " V, "
-            << "Inductor Voltage = " << inductorVoltage << " V, "
+            << "PSU Voltage = " << psuVoltage << " V, "
             << "Current = " << psuCurrent << " A" << nl;
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
