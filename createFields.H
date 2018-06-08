@@ -7,7 +7,6 @@ autoPtr<fluidThermo> pThermo
 fluidThermo& thermo = pThermo();
 thermo.validate(args.executable(), "h", "e");
 
-//volScalarField& he = thermo.he();
 volScalarField& T = thermo.T();
 volScalarField& p = thermo.p();
 const volScalarField& psi = thermo.psi();
@@ -129,7 +128,7 @@ for(label dataI = 1; dataI < ekSpData.size()-1; dataI++)
     ekSpData[dataI] = (ekData[dataI+1] - ekData[dataI-1]) / (2. * ekDeltaT);
 }
 
-Info<< "    ek temperature range: " << QRadStartT << ", "
+Info<< "    ek temperature range: " << ekStartT << ", "
     << ekStartT + ekDeltaT * (ekData.size() - 1) << nl << nl;
 
 Info<< "Setting up field QRad\n" << endl;

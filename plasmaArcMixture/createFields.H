@@ -50,6 +50,10 @@ volVectorField U
 
 #include "compressibleCreatePhi.H"
 
+pressureControl pressureControl(p, rho, pimple.dict(), false);
+
+mesh.setFluxRequired(p.name());
+
 dimensionedScalar rhoMax
 (
     dimensionedScalar::lookupOrDefault
