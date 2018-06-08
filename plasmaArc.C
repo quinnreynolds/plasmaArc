@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    plasmaArcFoam
+    plasmaArc
 
 Description
     Transient MHD solver for laminar or turbulent flow of compressible or
