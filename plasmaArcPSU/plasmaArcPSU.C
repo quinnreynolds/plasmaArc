@@ -22,27 +22,30 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    plasmaArcFoam
+    plasmaArcPSU
 
 Description
     Transient MHD solver for laminar or turbulent flow of compressible or
-    incompressible, non-isochoric plasma fluids.
+    incompressible, non-isochoric plasma fluids. This version includes
+    emIncludeCC for current-controlled power supplies - please see the
+    documentation for that repository for usage details.
 
     Uses the flexible PIMPLE (PISO-SIMPLE) solution for time-resolved and
     pseudo-transient simulations.
 
-    Based on rhoPimpleFoam and myRhoPimpleFoam.
+    Based on rhoPimpleFoam.
 
 
-Q Reynolds Feb 2015
+Q Reynolds 2015-2017
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "rhoThermo.H"
+#include "fluidThermo.H"
 #include "turbulentFluidThermoModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
+#include "pressureControl.H"
 #include "fvOptions.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
@@ -51,31 +54,31 @@ Q Reynolds Feb 2015
 #include "zeroGradientFvPatchField.H"
 #include "interpolationTable.H"
 
-#include "scalarLookup.H"
+#include "../scalarLookup.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
 {
+    #include "postProcess.H"
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
-
-    pimpleControl pimple(mesh);
-
+    #include "createControl.H"
     #include "createTimeControls.H"
-    #include "createRDeltaT.H"
     #include "initContinuityErrs.H"
+    #include "createRDeltaT.H"
     #include "createFields.H"
-    #include "eminclude/createFields.H"
     #include "createMRF.H"
-    #include "eminclude/readSolverControls.H"
+    #include "../emincludecc/createFields.H"
+    #include "../emincludecc/createPowerSupply.H"
+    #include "../emincludecc/readSolverControls.H"
     #include "createFvOptions.H"
 
     Info<< "\nInitialising surface normals and fraction tensor BCs for A...\n"
         << endl;
 
-    #include "eminclude/setDirectionMixedBC.H"
+    #include "../emincludecc/setDirectionMixedBC.H"
 
     if (!LTS)
     {
@@ -92,7 +95,7 @@ int main(int argc, char *argv[])
         #include "readTimeControls.H"
         if (LTS)
         {
-            #include "setRDeltaT.H"
+            #include "../setRDeltaT.H"
         }
         else
         {
@@ -105,8 +108,8 @@ int main(int argc, char *argv[])
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         //update EM transport fields and solve
-        #include "ekQradCalculate.H"
-        #include "eminclude/emEqns.H"
+        #include "../ekQradCalculate.H"
+        #include "../emincludecc/emEqns.H"
 
         if (pimple.nCorrPIMPLE() <= 1)
         {
@@ -116,19 +119,19 @@ int main(int argc, char *argv[])
         //Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            #include "UEqn.H"
-            #include "TEqn.H"
+            #include "../UEqn.H"
+            #include "../TEqn.H"
 
             //Pressure corrector loop
             while (pimple.correct())
             {
                 if (pimple.consistent())
                 {
-                    #include "pcEqn.H"
+                    #include "../pcEqn.H"
                 }
                 else
                 {
-                    #include "pEqn.H"
+                    #include "../pEqn.H"
                 }
             }
 
@@ -139,15 +142,13 @@ int main(int argc, char *argv[])
         }
 
         runTime.write();
+        // #include "../emincludecc/writePsuState.H"
 
-        Info<< "Pressure min/max = " << min(p).value() << " / "
-            << max(p).value() << " Pa" << nl;
-
-        Info<< "Voltage = " << max(ePot).value() << " V, "
-            << "Temperature = " << max(T).value() << " K, "
-            << "|U| = " << max(mag(U)).value() << " m/s"
-            << nl;
-
+        Info<< "Temperature = " << max(T).value() << " K, "
+            << "|U| = " << max(mag(U)).value() << " m/s" << nl;
+        Info<< "Arc Voltage = " << max(ePot).value() << " V, "
+            << "PSU Voltage = " << psuVoltage << " V, "
+            << "Current = " << psuCurrent << " A" << nl;
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
             << nl << endl;

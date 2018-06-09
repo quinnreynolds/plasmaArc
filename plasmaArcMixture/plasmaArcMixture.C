@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    plasmaArcMixtureFoam
+    plasmaArcMixture
 
 Description
     Transient MHD solver for laminar or turbulent flow of compressible or
@@ -41,6 +41,7 @@ Q Reynolds 2015-2017
 #include "bound.H"
 #include "pimpleControl.H"
 #include "fvOptions.H"
+#include "pressureControl.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
 
@@ -54,18 +55,17 @@ Q Reynolds 2015-2017
 
 int main(int argc, char *argv[])
 {
+    #include "postProcess.H"
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
-
-    pimpleControl pimple(mesh);
-
+    #include "createControl.H"
     #include "createTimeControls.H"
-    #include "createRDeltaT.H"
     #include "initContinuityErrs.H"
+    #include "createRDeltaT.H"
     #include "createFields.H"
-    #include "../eminclude/createFields.H"
     #include "createMRF.H"
+    #include "../eminclude/createFields.H"
     #include "../eminclude/readSolverControls.H"
     #include "createFvOptions.H"
 
@@ -73,6 +73,8 @@ int main(int argc, char *argv[])
         << endl;
 
     #include "../eminclude/setDirectionMixedBC.H"
+
+    turbulence->validate();
 
     if (!LTS)
     {
@@ -134,6 +136,8 @@ int main(int argc, char *argv[])
                 turbulence->correct();
             }
         }
+
+        rho = thermo.rho();
 
         runTime.write();
 
