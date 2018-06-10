@@ -92,74 +92,24 @@ IOdictionary thermoPropertiesDict
     )
 );
 
-Info<< "Creating LUTs for QRad and ek" << nl;
+Info<< "Creating LUT for ek" << nl;
 
-// LUTs for ek and QRad
-scalar QRadStartT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("startT")));
-
-scalar QRadDeltaT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("deltaT")));
-
-List<scalar> QRadData(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("QRadLookupTable").lookup("dataTable"));
-
-List<scalar> QRadSpData(QRadData);
-
-QRadSpData[0] = (QRadData[1] - QRadData[0]) / QRadDeltaT;
-QRadSpData[QRadSpData.size()-1] = (QRadData[QRadSpData.size()-1] - QRadData[QRadSpData.size()-2]) / QRadDeltaT;
-for(label dataI = 1; dataI < QRadSpData.size()-1; dataI++)
-{
-    QRadSpData[dataI] = (QRadData[dataI+1] - QRadData[dataI-1]) / (2. * QRadDeltaT);
-}
-
-Info<< "    QRad temperature range: " << QRadStartT << ", "
-    << QRadStartT + QRadDeltaT * (QRadData.size() - 1) << nl;
-
-scalar ekStartT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("startT")));
-
-scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("deltaT")));
-
-List<scalar> ekData(thermoPropertiesDict.subDict("mixture").subDict("transport").subDict("ekLookupTable").lookup("dataTable"));
-
+scalar ekStartT(readScalar(thermoPropertiesDict.subDict("mixture")
+    .subDict("transport").subDict("ekLookupTable").lookup("startT")));
+scalar ekDeltaT(readScalar(thermoPropertiesDict.subDict("mixture")
+    .subDict("transport").subDict("ekLookupTable").lookup("deltaT")));
+List<scalar> ekData(thermoPropertiesDict.subDict("mixture").subDict("transport")
+    .subDict("ekLookupTable").lookup("dataTable"));
 List<scalar> ekSpData(ekData);
-
 ekSpData[0] = (ekData[1] - ekData[0]) / ekDeltaT;
-ekSpData[ekSpData.size()-1] = (ekData[ekSpData.size()-1] - ekData[ekSpData.size()-2]) / ekDeltaT;
+ekSpData[ekSpData.size()-1] = (ekData[ekSpData.size()-1]
+                             - ekData[ekSpData.size()-2]) / ekDeltaT;
 for(label dataI = 1; dataI < ekSpData.size()-1; dataI++)
 {
     ekSpData[dataI] = (ekData[dataI+1] - ekData[dataI-1]) / (2. * ekDeltaT);
 }
-
 Info<< "    ek temperature range: " << ekStartT << ", "
     << ekStartT + ekDeltaT * (ekData.size() - 1) << nl << nl;
-
-Info<< "Setting up field QRad\n" << endl;
-volScalarField QRad
-(
-    IOobject
-    (
-        "QRad",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("QRad", dimensionSet(1,-1,-3,0,0,0,0), 1.0)
-);
-
-Info<< "Setting up field QRadSp\n" << endl;
-volScalarField QRadSp
-(
-    IOobject
-    (
-        "QRadSp",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("QRadSp", dimensionSet(1,-1,-3,-1,0,0,0), 1.0)
-);
 
 Info<< "Setting up field ekSp\n" << endl;
 volScalarField ekSp

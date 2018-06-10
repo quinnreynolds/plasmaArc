@@ -1,8 +1,8 @@
 {
     volScalarField& he = thermo.he();
 
-    volScalarField qSourceSp = -ekSp * (j & j) / (ek * ek) - QRadSp;
-    volScalarField qSourceSc = (j & j) / ek - QRad - qSourceSp * T;
+    volScalarField qSourceSp = -ekSp * (j & j) / (ek * ek);
+    volScalarField qSourceSc = -qSourceSp * (ek + T);
 
     surfaceScalarField electronTransportPhi
         = constantET * linearInterpolate(j) & mesh.Sf();
@@ -20,14 +20,20 @@
             ? fvc::div(fvc::absolute(phi / fvc::interpolate(rho), U), p)
             : -dpdt
         )
-      - fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
-      - fvm::Sp(qSourceSp, T)
-      - qSourceSc
+     ==
+        fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
+      + fvm::Sp(qSourceSp, T)
+      + qSourceSc
+      + fvOptions(rho * thermo.Cp(), T)
     );
 
     TEqn.relax();
 
+    fvOptions.constrain(TEqn);
+
     TEqn.solve();
+
+    fvOptions.correct(TEqn);
 
     he = thermo.he(p, T);
 
