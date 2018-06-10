@@ -24,7 +24,7 @@
         fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
       + fvm::Sp(qSourceSp, T)
       + qSourceSc
-      + fvOptions(rho * thermo.Cp(), T)
+      + fvOptions(rho*thermo.Cp(), T)
     );
 
     TEqn.relax();
