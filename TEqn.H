@@ -2,7 +2,7 @@
     volScalarField& he = thermo.he();
 
     volScalarField qSourceSp = -ekSp * (j & j) / (ek * ek);
-    volScalarField qSourceSc = -qSourceSp * (ek + T);
+    volScalarField qSourceSc = -qSourceSp * (ek + ekSp * T);
 
     surfaceScalarField electronTransportPhi
         = constantET * linearInterpolate(j) & mesh.Sf();
