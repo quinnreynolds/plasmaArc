@@ -2,7 +2,8 @@
 forAll(ek(),cellI)
 {
     ek.ref()[cellI] = scalarLookup(T.ref()[cellI], ekStartT, ekDeltaT, ekData);
-    ek.ref()[cellI] = scalarLookup(T.ref()[cellI], ekStartT, ekDeltaT, ekSpData);
+    ekSp.ref()[cellI] =
+        scalarLookup(T.ref()[cellI], ekStartT, ekDeltaT, ekSpData);
 }
 
 ek.correctBoundaryConditions();
