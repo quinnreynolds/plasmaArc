@@ -125,17 +125,3 @@ volScalarField ekSp
     mesh,
     dimensionedScalar("ekSp", dimensionSet(-1,-3,3,-1,0,2,0), 1000.)
 );
-
-volScalarField Qdot
-(
-    IOobject
-    (
-        "Qdot",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("Qdot", dimEnergy/dimVolume/dimTime, 0.0)
-);
