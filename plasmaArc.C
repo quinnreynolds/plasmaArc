@@ -119,7 +119,8 @@ int main(int argc, char *argv[])
         while (pimple.loop())
         {
             #include "UEqn.H"
-            #include "TEqn.H"
+            //#include "TEqn.H"
+            #include "EEqn.H"
 
             //Pressure corrector loop
             while (pimple.correct())
