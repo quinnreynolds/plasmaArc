@@ -21,7 +21,8 @@
             : -dpdt
         )
       ==
-        fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
+        Qdot
+      + fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
       + fvm::Sp(qSourceSp, T)
       + qSourceSc
       + fvOptions(rho*thermo.Cp(), T)
