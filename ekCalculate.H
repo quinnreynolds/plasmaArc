@@ -13,6 +13,7 @@ forAll(ek.boundaryField(),patchI) {
     forAll(ek.boundaryFieldRef()[patchI],cellI)
     {
         ekSp.boundaryFieldRef()[patchI][cellI] =
-            scalarLookup(T.boundaryFieldRef()[patchI][cellI], ekStartT, ekDeltaT, ekSpData);
+            scalarLookup(T.boundaryFieldRef()[patchI][cellI],
+                         ekStartT, ekDeltaT, ekSpData);
     }
 }
