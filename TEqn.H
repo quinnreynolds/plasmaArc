@@ -20,20 +20,19 @@
             ? fvc::div(fvc::absolute(phi / fvc::interpolate(rho), U), p)
             : -dpdt
         )
-     ==
-        fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
-      + fvm::Sp(qSourceSp, T)
-      + qSourceSc
-      + fvOptions(rho*thermo.Cp(), T)
+      - fvm::laplacian(turbulence->alphaEff()*thermo.Cp(), T)
+      - fvm::Sp(qSourceSp, T)
+      - qSourceSc
+      //+ fvOptions(rho*thermo.Cp(), T)
     );
 
     TEqn.relax();
 
-    fvOptions.constrain(TEqn);
+    //fvOptions.constrain(TEqn);
 
     TEqn.solve();
 
-    fvOptions.correct(T);
+    //fvOptions.correct(T);
 
     he = thermo.he(p, T);
 
