@@ -33,7 +33,5 @@
 
     fvOptions.correct(he);
 
-    //he = thermo.he(p, T);
-
     thermo.correct();
 }
