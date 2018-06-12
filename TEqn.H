@@ -33,7 +33,7 @@
 
     TEqn.solve();
 
-    fvOptions.correct(TEqn);
+    fvOptions.correct(T);
 
     he = thermo.he(p, T);
 
