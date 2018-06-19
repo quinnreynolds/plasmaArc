@@ -27,7 +27,7 @@ Application
 Description
     Transient MHD solver for laminar or turbulent flow of compressible or
     incompressible, non-isochoric plasma fluids. This version includes
-    emIncludeCC for current-controlled power supplies - please see the
+    emincludepsu for current-controlled power supplies - please see the
     documentation for that repository for usage details.
 
     Uses the flexible PIMPLE (PISO-SIMPLE) solution for time-resolved and
@@ -70,15 +70,15 @@ int main(int argc, char *argv[])
     #include "createRDeltaT.H"
     #include "createFields.H"
     #include "createMRF.H"
-    #include "../emincludecc/createFields.H"
-    #include "../emincludecc/createPowerSupply.H"
-    #include "../emincludecc/readSolverControls.H"
+    #include "../emincludepsu/createFields.H"
+    #include "../emincludepsu/createPowerSupply.H"
+    #include "../emincludepsu/readSolverControls.H"
     #include "createFvOptions.H"
 
     Info<< "\nInitialising surface normals and fraction tensor BCs for A...\n"
         << endl;
 
-    #include "../emincludecc/setDirectionMixedBC.H"
+    #include "../emincludepsu/setDirectionMixedBC.H"
 
     if (!LTS)
     {
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 
         //update EM transport fields and solve
         #include "../ekQradCalculate.H"
-        #include "../emincludecc/emEqns.H"
+        #include "../emincludepsu/emEqns.H"
 
         if (pimple.nCorrPIMPLE() <= 1)
         {
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
         }
 
         runTime.write();
-        // #include "../emincludecc/writePsuState.H"
+        // #include "../emincludepsu/writePsuState.H"
 
         Info<< "Temperature = " << max(T).value() << " K, "
             << "|U| = " << max(mag(U)).value() << " m/s" << nl;
