@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         //update EM transport fields and solve
-        #include "ekQradCalculate.H"
+        #include "ekCalculate.H"
         #include "../eminclude/emEqns.H"
 
         if (pimple.nCorrPIMPLE() <= 1)
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
         while (pimple.loop())
         {
             #include "../UEqn.H"
-            #include "../TEqn.H"
+            #include "../EEqn.H"
 
             //Pressure corrector loop
             while (pimple.correct())
