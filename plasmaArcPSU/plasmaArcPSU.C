@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         //update EM transport fields and solve
-        #include "../ekQradCalculate.H"
+        #include "../ekCalculate.H"
         #include "../emincludepsu/emEqns.H"
 
         if (pimple.nCorrPIMPLE() <= 1)
