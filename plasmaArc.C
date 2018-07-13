@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
         #include "ekCalculate.H"
         #include "eminclude/emEqns.H"
 
-        if (pimple.nCorrPIMPLE() <= 1)
+        if (pimple.nCorrPimple() <= 1)
         {
             #include "rhoEqn.H"
         }
