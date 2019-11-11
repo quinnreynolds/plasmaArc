@@ -1,0 +1,51 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "0.1.0",
+    "tasks":[
+        {
+            "taskName": "Allwmake",
+            "isBuildCommand": true,
+            "isShellCommand": true,
+            "showOutput": "always", //always, never, silent
+            "suppressTaskName": true,
+            // Allwmake script changes directories, so paths printed by g++ are not relative to a 
+            // predictable root. Therefore we filter the output to find the files specified in 
+            // errors so that the problem matcher can understand them.
+            "command": "bash",
+            "args": ["-c", "wmake() { bash -c '$WM_PROJECT_DIR/wmake/wmake '\"$*\"' 2>&1 | while read LINE; do FILE=$(echo $LINE | /usr/bin/sed \"s#^\\\\([^: ]*\\\\):[0-9]\\+:[0-9]\\+.*#\\\\1#; t; d\"); if [ -n \"$FILE\" ] && [ \"${FILE:0:1}\" != \"/\" ] ; then if [ '\"$1\"' == \"all\" ]; then echo -n \"$MAKEDIR/\"; else echo -n \"$PWD/'\"${@: -1}\"'/\"; fi; else MD=$(echo $LINE | /usr/bin/sed \"s#^make\\[[0-9]\\+\\]: Entering directory '\"'\"'\\\\(.*\\\\)'\"'\"'\\$#\\\\1#; t; d\"); if [ -n \"$MD\" ] ; then MAKEDIR=\"$MD\"; fi; fi; echo \"$LINE\"; done'; }; export -f wmake; bash -c 'source Allwmake'"],
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": "absolute", //["relative", "${workspaceRoot}"],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|fatal error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "taskName": "wmake",
+            "isBuildCommand": false,
+            "isShellCommand": true,
+            "showOutput": "always", //always, never, silent
+            "suppressTaskName": true,
+            "command": "wmake",
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": ["relative", "${workspaceRoot}"],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|fatal error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        }
+    ]
+}
