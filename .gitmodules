@@ -2,8 +2,3 @@
 	path = eminclude
 	url = https://kittychunk@bitbucket.org/kittychunk/eminclude.git
 	branch = master
-
-[submodule "emincludepsu"]
-	path = emincludepsu
-	url = https://kittychunk@bitbucket.org/kittychunk/emincludepsu.git
-	branch = master

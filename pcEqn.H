@@ -21,10 +21,14 @@ surfaceScalarField phiHbyA
     "phiHbyA",
     (
         fvc::interpolate(rho)*fvc::flux(HbyA)
-      + fvc::interpolate(rho*rAU)*fvc::ddtCorr(rho, U, phi)
+      + MRF.zeroFilter
+        (
+            fvc::interpolate(rho*rAU)*fvc::ddtCorr(rho, U, phi, rhoUf)
+        )
     )
 );
 
+fvc::makeRelative(phiHbyA, rho, U);
 MRF.makeRelative(fvc::interpolate(rho), phiHbyA);
 
 volScalarField rhorAtU("rhorAtU", rho*rAtU);
@@ -48,8 +52,7 @@ if (pimple.transonic())
 
     fvScalarMatrix pDDtEqn
     (
-        //fvc::ddt(rho) + psi*correction(fvm::ddt(p))
-        fvm::ddt(psi, p)
+        fvc::ddt(rho) + psi*correction(fvm::ddt(p))
       + fvc::div(phiHbyA) + fvm::div(phid, p)
      ==
         fvOptions(psi, p, rho.name())
@@ -62,7 +65,7 @@ if (pimple.transonic())
         // Relax the pressure equation to ensure diagonal-dominance
         pEqn.relax();
 
-        pEqn.solve(mesh.solver(p.select(pimple.finalInnerIter())));
+        pEqn.solve();
 
         if (pimple.finalNonOrthogonalIter())
         {
@@ -77,8 +80,7 @@ else
 
     fvScalarMatrix pDDtEqn
     (
-        //fvc::ddt(rho) + psi*correction(fvm::ddt(p))
-        fvm::ddt(psi, p)
+        fvc::ddt(rho) + psi*correction(fvm::ddt(p))
       + fvc::div(phiHbyA)
      ==
         fvOptions(psi, p, rho.name())
@@ -97,8 +99,15 @@ else
     }
 }
 
+bool limitedp = pressureControl.limit(p);
+
 // Thermodynamic density update
 thermo.correctRho(psi*p - psip0);
+
+if (limitedp)
+{
+    rho = thermo.rho();
+}
 
 #include "rhoEqn.H"
 #include "compressibleContinuityErrs.H"
@@ -111,17 +120,20 @@ U.correctBoundaryConditions();
 fvOptions.correct(U);
 K = 0.5*magSqr(U);
 
-if (pressureControl.limit(p))
-{
-    p.correctBoundaryConditions();
-    rho = thermo.rho();
-}
-else if (pimple.simpleRho())
+if (pimple.simpleRho())
 {
     rho = thermo.rho();
 }
 
+// Correct rhoUf if the mesh is moving
+fvc::correctRhoUf(rhoUf, rho, U, phi);
+
 if (thermo.dpdt())
 {
     dpdt = fvc::ddt(p);
+
+    if (mesh.moving())
+    {
+        dpdt -= fvc::div(fvc::meshPhi(rho, U), p);
+    }
 }
