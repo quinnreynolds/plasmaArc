@@ -42,7 +42,7 @@ if (pimple.transonic())
     fvScalarMatrix pDDtEqn
     (
         fvc::ddt(rho) + psi*correction(fvm::ddt(p))
-        fvc::div(phiHbyA) + fvm::div(phid, p)
+      + fvc::div(phiHbyA) + fvm::div(phid, p)
      ==
         fvOptions(psi, p, rho.name())
     );
