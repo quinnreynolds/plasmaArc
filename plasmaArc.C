@@ -39,11 +39,13 @@ Q Reynolds 2015-2017
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
+#include "dynamicFvMesh.H"
 #include "fluidThermo.H"
 #include "turbulentFluidThermoModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
 #include "pressureControl.H"
+#include "CorrectPhi.H"
 #include "fvOptions.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
@@ -59,11 +61,10 @@ Q Reynolds 2015-2017
 int main(int argc, char *argv[])
 {
     #include "postProcess.H"
-    #include "setRootCase.H"
+    #include "setRootCaseLists.H"
     #include "createTime.H"
-    #include "createMesh.H"
-    #include "createControl.H"
-    #include "createTimeControls.H"
+    #include "createDynamicFvMesh.H"
+    #include "createDyMControls.H"
     #include "initContinuityErrs.H"
     #include "createRDeltaT.H"
     #include "createFields.H"
@@ -71,6 +72,7 @@ int main(int argc, char *argv[])
     #include "eminclude/createFields.H"
     #include "eminclude/readSolverControls.H"
     #include "createFvOptions.H"
+    #include "createRhoUfIfPresent.H"
 
     Info<< "\nInitialising surface normals and fraction tensor BCs for A...\n"
         << endl;
@@ -91,8 +93,19 @@ int main(int argc, char *argv[])
 
     while (runTime.run())
     {
-        #include "readTimeControls.H"
-        if (LTS)
+        #include "readDyMControls.H"
+ 
+         autoPtr<volScalarField> divrhoU;
+        if (correctPhi)
+        {
+            divrhoU = new volScalarField
+            (
+                "divrhoU",
+                fvc::div(fvc::absolute(phi, rho, U))
+            );
+        }
+
+       if (LTS)
         {
             #include "setRDeltaT.H"
         }
@@ -110,14 +123,49 @@ int main(int argc, char *argv[])
         #include "ekCalculate.H"
         #include "eminclude/emEqns.H"
 
-        if (pimple.nCorrPimple() <= 1)
-        {
-            #include "rhoEqn.H"
-        }
-
         //Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
+            if (pimple.firstPimpleIter() || moveMeshOuterCorrectors)
+            {
+                // Store momentum to set rhoUf for introduced faces.
+                autoPtr<volVectorField> rhoU;
+                if (rhoUf.valid())
+                {
+                    rhoU = new volVectorField("rhoU", rho*U);
+                }
+
+                // Do any mesh changes
+                mesh.update();
+
+                if (mesh.changing())
+                {
+                    MRF.update();
+
+                    if (correctPhi)
+                    {
+                        // Calculate absolute flux
+                        // from the mapped surface velocity
+                        phi = mesh.Sf() & rhoUf();
+
+                        #include "correctPhi.H"
+
+                        // Make the fluxes relative to the mesh-motion
+                        fvc::makeRelative(phi, rho, U);
+                    }
+
+                    if (checkMeshCourantNo)
+                    {
+                        #include "meshCourantNo.H"
+                    }
+                }
+            }
+
+            if (pimple.firstPimpleIter() && !pimple.simpleRho())
+            {
+                #include "rhoEqn.H"
+            }
+
             #include "UEqn.H"
             #include "EEqn.H"
 
