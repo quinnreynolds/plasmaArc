@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         //update EM transport fields and solve
-        #include "ekCalculate.H"
+        #include "calculateEk.H"
         #include "eminclude/emEqns.H"
 
         //Pressure-velocity PIMPLE corrector loop
@@ -190,6 +190,8 @@ int main(int argc, char *argv[])
 
         rho = thermo.rho();
 
+        #include "calculateMachNo.H"
+
         runTime.write();
 
         Info<< "Pressure min/max = " << min(p).value() << " / "
@@ -197,8 +199,8 @@ int main(int argc, char *argv[])
 
         Info<< "Voltage = " << max(ePot).value() << " V, "
             << "Temperature = " << max(T).value() << " K, "
-            << "|U| = " << max(mag(U)).value() << " m/s"
-            << nl;
+            << "|U| = " << max(magU).value() << " m/s, "
+            << "Mach Number = " << max(MachNo).value() << nl;
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
