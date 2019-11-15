@@ -77,6 +77,20 @@ volScalarField dpdt
 Info<< "Creating field kinetic energy K\n" << endl;
 volScalarField K("K", 0.5*magSqr(U));
 
+Info<< "Creating field MachNo\n" << endl;
+volScalarField MachNo
+(
+    IOobject
+    (
+        "MachNo",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+),
+    mesh,
+    dimensionedScalar("MachNo", dimensionSet(0,0,0,0,0,0,0), 0)
+);
 
 // Open dictionary for reading
 

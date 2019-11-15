@@ -52,8 +52,7 @@ if (pimple.transonic())
 
     fvScalarMatrix pDDtEqn
     (
-        //fvc::ddt(rho) + psi*correction(fvm::ddt(p))
-        fvm::ddt(psi, p)
+        fvc::ddt(rho) + psi*correction(fvm::ddt(p))
       + fvc::div(phiHbyA) + fvm::div(phid, p)
      ==
         fvOptions(psi, p, rho.name())
@@ -81,8 +80,7 @@ else
 
     fvScalarMatrix pDDtEqn
     (
-        //fvc::ddt(rho) + psi*correction(fvm::ddt(p))
-        fvm::ddt(psi, p)
+        fvc::ddt(rho) + psi*correction(fvm::ddt(p))
       + fvc::div(phiHbyA)
      ==
         fvOptions(psi, p, rho.name())
