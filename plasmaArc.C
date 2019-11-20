@@ -194,13 +194,13 @@ int main(int argc, char *argv[])
 
         runTime.write();
 
-        Info<< "Pressure min/max = " << gMin(p).value() << " / "
-            << gMax(p).value() << " Pa" << nl;
+        Info<< "Pressure min/max = " << gMin(p) << " / "
+            << gMax(p) << " Pa" << nl;
 
-        Info<< "Voltage = " << gMax(ePot).value() << " V, "
-            << "Temperature = " << gMax(T).value() << " K, "
-            << "|U| = " << gMax(magU).value() << " m/s, "
-            << "Mach Number = " << gMax(MachNo).value() << nl;
+        Info<< "Voltage = " << gMax(ePot) << " V, "
+            << "Temperature = " << gMax(T) << " K, "
+            << "|U| = " << gMax(magU) << " m/s, "
+            << "Ma = " << gMax(MachNo) << nl;
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
