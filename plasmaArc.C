@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 
         runTime.write();
 
-        Info<< "Pressure min/max = " << min(p).value() << " / "
+        Info<< "Pressure min/max = " << gMin(p).value() << " / "
             << gMax(p).value() << " Pa" << nl;
 
         Info<< "Voltage = " << gMax(ePot).value() << " V, "
