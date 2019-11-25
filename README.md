@@ -18,8 +18,8 @@ To build plasmaArc:
 Additional requirements:
 
 * Thermophysical properties - compressibleFluidLut thermo module (note that incompressibleFluidLut will also work but requires older versions of plasmaArc which uses incompressible formulations of the pressure equation time derivatives).
-* Radiation - emissionFvDOM and greyPlasmaAbsorptionEmission modules.
-* Boundary conditions - limitedTemperature, fixedCurrentDensity, emissionFvDOMGreyDiffusive.
+* Radiation - greyPlasmaAbsorptionEmission module.
+* Boundary conditions - limitedTemperature, fixedCurrentDensity, fixedCurrentCurrentDensity.
 
 ### Contribution guidelines ###
 
