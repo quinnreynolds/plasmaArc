@@ -2,10 +2,5 @@
     // OpenFOAM is too nonstandard for linting to work properly
     "C_Cpp.errorSquiggles": "Disabled",
     // Intellisense doesn't seem to find headers correctly
-    "C_Cpp.intelliSenseEngine": "Tag Parser",
-    "files.associations": {
-        "hashedwordlist.h": "c",
-        "multiMarkerMixture.C": "cpp",
-        "dmmSolve.C": "cpp"
-    }
+    "C_Cpp.intelliSenseEngine": "Tag Parser"
 }
