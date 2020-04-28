@@ -1,4 +1,4 @@
-[submodule "eminclude"]
-	path = eminclude
-	url = git@bitbucket.org:kittychunk/eminclude.git
+[submodule "emInclude"]
+	path = emInclude
+	url = git@github.com:quinnreynolds/emInclude.git
 	branch = master

@@ -69,15 +69,15 @@ int main(int argc, char *argv[])
     #include "createRDeltaT.H"
     #include "createFields.H"
     #include "createMRF.H"
-    #include "eminclude/createFields.H"
-    #include "eminclude/readSolverControls.H"
+    #include "emInclude/createFields.H"
+    #include "emInclude/readSolverControls.H"
     #include "createFvOptions.H"
     #include "createRhoUfIfPresent.H"
 
     Info<< "\nInitialising surface normals and fraction tensor BCs for A...\n"
         << endl;
 
-    #include "eminclude/setDirectionMixedBC.H"
+    #include "emInclude/setDirectionMixedBC.H"
 
     turbulence->validate();
 
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 
         //update EM transport fields and solve
         #include "calculateEk.H"
-        #include "eminclude/emEqns.H"
+        #include "emInclude/emEqns.H"
 
         //Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
