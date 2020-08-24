@@ -41,7 +41,8 @@ Q Reynolds 2015-2017
 #include "fvCFD.H"
 #include "dynamicFvMesh.H"
 #include "fluidThermo.H"
-#include "turbulentFluidThermoModel.H"
+#include "fluidThermoMomentumTransportModel.H"
+#include "fluidThermophysicalTransportModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
 #include "pressureControl.H"
@@ -52,7 +53,6 @@ Q Reynolds 2015-2017
 
 #include "directionMixedFvPatchFields.H"
 #include "zeroGradientFvPatchField.H"
-#include "interpolationTable.H"
 
 #include "scalarLookup.H"
 
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
     {
         #include "readDyMControls.H"
  
-         autoPtr<volScalarField> divrhoU;
+        autoPtr<volScalarField> divrhoU;
         if (correctPhi)
         {
             divrhoU = new volScalarField
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
             );
         }
 
-       if (LTS)
+        if (LTS)
         {
             #include "setRDeltaT.H"
         }
@@ -161,7 +161,12 @@ int main(int argc, char *argv[])
                 }
             }
 
-            if (pimple.firstPimpleIter() && !pimple.simpleRho())
+            if 
+            (
+                !mesh.steady() 
+                && pimple.firstPimpleIter() 
+                && !pimple.simpleRho()
+            )
             {
                 #include "rhoEqn.H"
             }
@@ -172,32 +177,26 @@ int main(int argc, char *argv[])
             //Pressure corrector loop
             while (pimple.correct())
             {
-                if (pimple.consistent())
-                {
-                    #include "pcEqn.H"
-                }
-                else
-                {
-                    #include "pEqn.H"
-                }
+                #include "pEqn.H"
             }
 
             if (pimple.turbCorr())
             {
                 turbulence->correct();
+                thermophysicalTransport->correct();
             }
         }
 
-        rho = thermo.rho();
+        if (!mesh.steady())
+        {
+            rho = thermo.rho();
+        }
 
         #include "calculateMachNo.H"
 
         runTime.write();
 
-        Info<< "Pressure min/max = " << gMin(p) << " / "
-            << gMax(p) << " Pa" << nl;
-
-        Info<< "Voltage = " << gMax(ePot) << " V, "
+        Info<< "Voltage = " << gMin(ePot) << "/" << gMax(ePot) << " V, "
             << "Temperature = " << gMax(T) << " K, "
             << "|U| = " << gMax(magU) << " m/s, "
             << "Ma = " << gMax(MachNo) << nl;

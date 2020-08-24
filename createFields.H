@@ -50,15 +50,21 @@ pressureControl pressureControl(p, rho, pimple.dict(), false);
 mesh.setFluxRequired(p.name());
 
 Info<< "Creating turbulence model\n" << endl;
-autoPtr<compressible::turbulenceModel> turbulence
+autoPtr<compressible::momentumTransportModel> turbulence
 (
-    compressible::turbulenceModel::New
+    compressible::momentumTransportModel::New
     (
         rho,
         U,
         phi,
         thermo
     )
+);
+
+Info<< "Creating thermophysical transport model\n" << endl;
+autoPtr<fluidThermophysicalTransportModel> thermophysicalTransport
+(
+    fluidThermophysicalTransportModel::New(turbulence(), thermo)
 );
 
 Info<< "Creating field dpdt\n" << endl;
@@ -139,3 +145,5 @@ volScalarField ekSp
     mesh,
     dimensionedScalar("ekSp", dimensionSet(-1,-3,3,-1,0,2,0), 1000.)
 );
+
+dimensionedScalar initialMass = fvc::domainIntegrate(rho);
