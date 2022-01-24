@@ -24,7 +24,7 @@
             )
           : -dpdt
         )
-      + thermophysicalTransport->divq(he)
+      - fvm::laplacian(turbulence->alphaEff(), he)
       ==
         fvm::Sp(qSourceSp, he)
       + qSourceSc

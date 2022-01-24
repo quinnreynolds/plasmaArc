@@ -1,10 +1,12 @@
 volVectorField USource = j ^ B;
 
+MRF.correctBoundaryVelocity(U);
+
 tmp<fvVectorMatrix> tUEqn
 (
     fvm::ddt(rho, U)
   + fvm::div(phi, U)
-  + turbulence->divDevTau(U)
+  + turbulence->divDevRhoReff(U)
   - USource
   ==
     fvOptions(rho, U)
@@ -13,6 +15,8 @@ tmp<fvVectorMatrix> tUEqn
 fvVectorMatrix& UEqn = tUEqn.ref();
 
 UEqn.relax();
+
+fvOptions.constrain(UEqn);
 
 if (pimple.momentumPredictor())
 {

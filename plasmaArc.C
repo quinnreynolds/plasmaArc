@@ -92,13 +92,19 @@ int main(int argc, char *argv[])
     {
         #include "readDyMControls.H"
  
+        // Store divrhoU from the previous mesh so that it can be mapped
+        // and used in correctPhi to ensure the corrected phi has the
+        // same divergence
         autoPtr<volScalarField> divrhoU;
         if (correctPhi)
         {
-            divrhoU = new volScalarField
+            divrhoU.reset
             (
-                "divrhoU",
-                fvc::div(fvc::absolute(phi, rho, U))
+                new volScalarField
+                (
+                    "divrhoU",
+                    fvc::div(fvc::absolute(phi, rho, U))
+                )
             );
         }
 
@@ -112,7 +118,7 @@ int main(int argc, char *argv[])
             #include "setDeltaT.H"
         }
 
-        runTime++;
+        ++runTime;
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
@@ -123,17 +129,17 @@ int main(int argc, char *argv[])
         //Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            if (pimple.firstPimpleIter() || moveMeshOuterCorrectors)
+            if (pimple.firstIter() || moveMeshOuterCorrectors)
             {
                 // Store momentum to set rhoUf for introduced faces.
                 autoPtr<volVectorField> rhoU;
                 if (rhoUf.valid())
                 {
-                    rhoU = new volVectorField("rhoU", rho*U);
+                    rhoU.reset(new volVectorField("rhoU", rho*U));
                 }
 
                 // Do any mesh changes
-                mesh.update();
+                mesh.controlledUpdate();
 
                 if (mesh.changing())
                 {
@@ -158,12 +164,7 @@ int main(int argc, char *argv[])
                 }
             }
 
-            if 
-            (
-                !mesh.steady() 
-                && pimple.firstPimpleIter() 
-                && !pimple.simpleRho()
-            )
+            if (pimple.firstIter() && !pimple.SIMPLErho())
             {
                 #include "rhoEqn.H"
             }
@@ -180,7 +181,6 @@ int main(int argc, char *argv[])
             if (pimple.turbCorr())
             {
                 turbulence->correct();
-                thermophysicalTransport->correct();
             }
         }
 
@@ -198,9 +198,7 @@ int main(int argc, char *argv[])
             << "|U| = " << gMax(magU) << " m/s, "
             << "Ma = " << gMax(MachNo) << nl;
 
-        Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
-            << "  ClockTime = " << runTime.elapsedClockTime() << " s"
-            << nl << endl;
+        runTime.printExecutionTime(Info);
     }
 
     Info<< "End\n" << endl;
