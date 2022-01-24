@@ -1,4 +1,0 @@
-[submodule "emInclude"]
-	path = emInclude
-	url = git@github.com:quinnreynolds/emInclude.git
-	branch = master

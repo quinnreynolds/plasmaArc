@@ -5,7 +5,7 @@ Coupled MHD model for studying plasma arc behaviour.
 ### What is this repository for? ###
 
 * Dynamics of incompressible and weakly-compressible (low current) thermal plasma arcs used in welding and arc furnace applications.
-* master compiles against OF8.
+* main currently compiles against OF8.
 
 ### How do I get set up? ###
 
