@@ -2,5 +2,8 @@
     // OpenFOAM is too nonstandard for linting to work properly
     "C_Cpp.errorSquiggles": "Disabled",
     // Intellisense doesn't seem to find headers correctly
-    "C_Cpp.intelliSenseEngine": "Tag Parser"
+    "C_Cpp.intelliSenseEngine": "Tag Parser",
+    "files.associations": {
+        "plasmaArc.C": "cpp"
+    }
 }
