@@ -48,7 +48,7 @@ dimensionedScalar constantMVP
 );
 
 //electric potential field
-Info<< "Reading field ePot\n" << endl;
+Info<< "Reading field ePot" << nl;
 volScalarField ePot
 (
     IOobject
@@ -63,7 +63,7 @@ volScalarField ePot
 );
 
 //magnetic vector potential field
-Info<< "Reading field A\n" << endl;
+Info<< "Reading field A" << nl;
 volVectorField A
 (
     IOobject
@@ -77,7 +77,7 @@ volVectorField A
     mesh
 );
 
-Info<< "Setting up field ek\n" << endl;
+Info<< "Setting up field ek" << nl;
 volScalarField ek
 (
     IOobject
@@ -92,7 +92,7 @@ volScalarField ek
 );
 
 //magnetic field
-Info<< "Setting up field B\n" << endl;
+Info<< "Setting up field B" << nl;
 volVectorField B
 (
     IOobject
@@ -106,7 +106,7 @@ volVectorField B
     fvc::curl(A)
 );
 
-Info<< "Setting up field j\n" << endl;
+Info<< "Setting up field j" << nl;
 volVectorField j
 (
     IOobject
@@ -120,7 +120,7 @@ volVectorField j
     -ek * fvc::grad(ePot)
 );
 
-Info<< "Reading field ddtA\n" << endl;
+Info<< "Reading field ddtA" << nl;
 volVectorField ddtA
 (
     IOobject

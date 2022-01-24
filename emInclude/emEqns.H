@@ -1,5 +1,7 @@
 // Solve for EM fields (dynamics)
 
+// TODO: Decoupling approach used here is questionable at best. Revise?
+
 if (runTime.timeIndex() == 1 || runTime.timeIndex() % emSolverFreq == 0)
 {
     // Time derivative correction factor

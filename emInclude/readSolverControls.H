@@ -1,10 +1,11 @@
-//EM solver loop controls
+// EM solver loop controls
 const dictionary& ePotDict
     = mesh.solutionDict().subDict("solvers").subDict("ePot");
 
 const dictionary& ADict
     = mesh.solutionDict().subDict("solvers").subDict("A");
 
+// TODO: This isn't particularly elegant
 scalar toleranceEPot = 10. * ePotDict.lookupOrDefault<scalar>("tolerance",1e-6);
 scalar toleranceA = 10. * ADict.lookupOrDefault<scalar>("tolerance",1e-6);
 
