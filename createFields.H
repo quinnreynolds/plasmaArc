@@ -50,9 +50,9 @@ pressureControl pressureControl(p, rho, pimple.dict(), false);
 mesh.setFluxRequired(p.name());
 
 Info<< "Creating turbulence model\n" << endl;
-autoPtr<compressible::momentumTransportModel> turbulence
+autoPtr<compressible::turbulenceModel> turbulence
 (
-    compressible::momentumTransportModel::New
+    compressible::turbulenceModel::New
     (
         rho,
         U,
@@ -60,28 +60,6 @@ autoPtr<compressible::momentumTransportModel> turbulence
         thermo
     )
 );
-
-Info<< "Creating thermophysical transport model\n" << endl;
-autoPtr<fluidThermophysicalTransportModel> thermophysicalTransport
-(
-    fluidThermophysicalTransportModel::New(turbulence(), thermo)
-);
-
-Info<< "Creating field dpdt\n" << endl;
-volScalarField dpdt
-(
-    IOobject
-    (
-        "dpdt",
-        runTime.timeName(),
-        mesh
-    ),
-    mesh,
-    dimensionedScalar("dpdt", p.dimensions()/dimTime, 0)
-);
-
-Info<< "Creating field kinetic energy K\n" << endl;
-volScalarField K("K", 0.5*magSqr(U));
 
 Info<< "Creating field MachNo\n" << endl;
 volScalarField MachNo
@@ -147,3 +125,14 @@ volScalarField ekSp
 );
 
 dimensionedScalar initialMass = fvc::domainIntegrate(rho);
+
+#include "createDpdt.H"
+
+#include "createK.H"
+
+#include "createMRF.H"
+
+const dimensionedScalar rhoMax("rhoMax", dimDensity, GREAT, pimple.dict());
+const dimensionedScalar rhoMin("rhoMin", dimDensity, Zero, pimple.dict());
+
+#include "createFvOptions.H"
