@@ -1,11 +1,11 @@
-if (runTime.writeTime())
+if (calculateCompositionFieldsYN && runTime.writeTime())
 {
     forAll(plasmaSpecies, compI)
     {
         // Internal field update for ek and ekSp
         forAll(T,cellI)
         {
-            compFields[compI].ref()[cellI] = scalarLookup
+            compFields[compI]->ref()[cellI] = scalarLookup
             (
                 T.ref()[cellI], 
                 compStartT[compI], 
@@ -14,18 +14,18 @@ if (runTime.writeTime())
             );
         }
 
-        /*forAll(T.boundaryField(),patchI) 
+        forAll(T.boundaryField(),patchI) 
         {
-            forAll(T.boundaryFieldRef()[patchI],cellI)
+            forAll(T.boundaryField()[patchI],cellI)
             {
-                compFields[compI].boundaryFieldRef()[patchI][cellI] = scalarLookup
+                compFields[compI]->boundaryFieldRef()[patchI][cellI] = scalarLookup
                 ( 
-                    T.boundaryFieldRef()[patchI][cellI],
+                    T.boundaryField()[patchI][cellI],
                     compStartT[compI], 
                     compDeltaT[compI], 
                     compData[compI]
                 );
             }
-        }*/   
+        }
     }
 }
