@@ -124,6 +124,8 @@ volScalarField ekSp
     dimensionedScalar("ekSp", dimensionSet(-1,-3,3,-1,0,2,0), 1000.)
 );
 
+#include "createFieldsCompositions.H"
+
 dimensionedScalar initialMass = fvc::domainIntegrate(rho);
 
 #include "createDpdt.H"

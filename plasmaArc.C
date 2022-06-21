@@ -191,6 +191,8 @@ int main(int argc, char *argv[])
 
         #include "calculateMachNo.H"
 
+        #include "calculateCompositions.H"
+        
         runTime.write();
 
         Info<< "Voltage = " << gMin(ePot) << "/" << gMax(ePot) << " V, "
