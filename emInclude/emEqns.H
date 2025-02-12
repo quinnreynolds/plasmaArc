@@ -9,9 +9,9 @@ if (runTime.timeIndex() == 1 || runTime.timeIndex() % emSolverFreq == 0)
     scalar dtCorrect = runTime.deltaT().value() / dtEM;
 
     // Explicit source and coupling terms (for stability)
-    volVectorField UcrossB = U ^ B;
-    volVectorField ekGrad = fvc::grad(ek);
-    volScalarField dotTerm = ekGrad & ddtA;
+    volVectorField UcrossB(U ^ B);
+    volVectorField ekGrad(fvc::grad(ek));
+    volScalarField dotTerm(ekGrad & ddtA);
 
     for (int nEM = 0; nEM < nMaxEMLoops; nEM++) {
         ek.correctBoundaryConditions();
@@ -27,9 +27,12 @@ if (runTime.timeIndex() == 1 || runTime.timeIndex() % emSolverFreq == 0)
         scalar residualEPot = ePotEqn.solve().initialResidual();
 
         // Electric potential current density
-        volVectorField jPot = fvc::reconstruct
+        volVectorField jPot
         (
-            -fvc::interpolate(ek) * fvc::snGrad(ePot) * mesh.magSf()
+            fvc::reconstruct
+            (
+                -fvc::interpolate(ek) * fvc::snGrad(ePot) * mesh.magSf()
+            )
         );
 
         // Set up solution matrices for A vector field

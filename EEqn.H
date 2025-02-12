@@ -1,11 +1,13 @@
 {
     volScalarField& he = thermo.he();
 
-    volScalarField qSourceSp = -ekSp * (j & j) / (ek * ek * thermo.Cp());
-    volScalarField qSourceSc = (j & j) / ek - qSourceSp * he;
+    volScalarField qSourceSp(-ekSp * (j & j) / (ek * ek * thermo.Cp()));
+    volScalarField qSourceSc((j & j) / ek - qSourceSp * he);
 
     surfaceScalarField electronTransportPhi
-        = constantET * linearInterpolate(j / thermo.Cp()) & mesh.Sf();
+    (
+      constantET * linearInterpolate(j / thermo.Cp()) & mesh.Sf()
+    );
 
     fvScalarMatrix EEqn
     (

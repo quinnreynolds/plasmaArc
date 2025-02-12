@@ -1,4 +1,4 @@
-volVectorField USource = j ^ B;
+volVectorField USource(j ^ B);
 
 MRF.correctBoundaryVelocity(U);
 
