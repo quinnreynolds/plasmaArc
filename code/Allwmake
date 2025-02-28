@@ -1,0 +1,10 @@
+#! /bin/sh
+
+# Clean solver directory
+cd solvers
+for sv in plasmaArc
+do
+    cd $sv
+    wmake
+    cd ../
+done
