@@ -1,26 +1,24 @@
 # README #
 
-Coupled MHD model for studying plasma arc behaviour. 
+A coupled magnetohydrodynamics solver for OpenFOAM, for studying the dynamic behaviour of weakly compressible thermal plasma arcs used in welding and metallurgical arc furnace applications. Live branches track ESI OpenFOAM releases unless otherwise indicated.
 
-### What is this repository for? ###
+Copyright (C) Quinn Reynolds and Mintek 2025-present
 
-* Dynamics of weakly compressible thermal plasma arcs used in welding and arc furnace applications.
-* Live branches track ESI OpenFOAM releases unless otherwise indicated.
+### Installation ###
 
-### How do I get set up? ###
+To build the solvers and support utilities for `plasmaArc`, you will need a working OpenFOAM installation and activated environment for same on your machine. If this is in place, you should be ok with the following after cloning the repository and changing directory to `plasmaArc`:
 
-To build plasmaArc:
+* `cd code`
+* `./Allwclean`
+* `./Allwmake`
 
-* Clone
-* wmake
+In addition to the solver itself this repository also contains the material properties and radiation libraries required for it to work, and a basic selection of solver-specific boundary conditions. Note that these will compile at the same time as the solvers when the `Allwclean`, `Allwmake` commands above are issued:
 
-Additional requirements:
+* Thermophysical properties - `compressibleFluidLut` thermo module.
+* Radiation - `greyPlasmaAbsorptionEmission` module (P1 or other emission-aware models are recommended for correct behaviour).
+* Boundary conditions - `limitedTemperature`, `fixedCurrentDensity`, `variableCurrentCurrentDensity`, and `fixedLocationCurrentDensity`.
 
-* Thermophysical properties - compressibleFluidLut thermo module.
-* Radiation - greyPlasmaAbsorptionEmission module (please use P1 or other emission-aware models for correct behaviour).
-* Boundary conditions - limitedTemperature, fixedCurrentDensity, variableCurrentCurrentDensity, etc.
-
-### Contribution guidelines ###
+### Example cases ###
 
 * TBD
 
