@@ -2,7 +2,7 @@
 
 # Clean boundaries directory
 cd boundaries
-for bv in limitedTemperature
+for bv in limitedTemperature fixedCurrentDensity
 do
     cd $bv
     wclean
