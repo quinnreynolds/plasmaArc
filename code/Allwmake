@@ -1,6 +1,16 @@
 #! /bin/sh
 
-# Clean solver directory
+# Build boundaries directory
+cd boundaries
+for bv in limitedTemperature
+do
+    cd $bv
+    wmake libso
+    cd ../
+done
+cd ../
+
+# Build solver directory
 cd solvers
 for sv in plasmaArc
 do

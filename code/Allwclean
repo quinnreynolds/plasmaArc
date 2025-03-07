@@ -1,5 +1,15 @@
 #! /bin/sh
 
+# Clean boundaries directory
+cd boundaries
+for bv in limitedTemperature
+do
+    cd $bv
+    wclean
+    cd ../
+done
+cd ../
+
 # Clean solver directory
 cd solvers
 for sv in plasmaArc
