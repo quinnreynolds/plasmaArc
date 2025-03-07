@@ -2,7 +2,7 @@
 
 # Build boundaries directory
 cd boundaries
-for bv in limitedTemperature fixedCurrentDensity
+for bv in limitedTemperature fixedCurrentDensity fixedLocationCurrentDensity
 do
     cd $bv
     wmake libso
