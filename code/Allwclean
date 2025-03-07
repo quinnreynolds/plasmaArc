@@ -12,7 +12,7 @@ cd ../
 
 # Clean thermo directory
 cd thermo
-for tv in compressibleFluidLut
+for tv in compressibleFluidLut greyPlasmaAbsorptionEmission
 do
     cd $tv
     wclean

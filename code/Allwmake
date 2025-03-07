@@ -12,7 +12,7 @@ cd ../
 
 # Build thermo directory
 cd thermo
-for tv in compressibleFluidLut
+for tv in compressibleFluidLut greyPlasmaAbsorptionEmission
 do
     cd $tv
     wmake libso
