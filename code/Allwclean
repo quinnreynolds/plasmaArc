@@ -10,6 +10,16 @@ do
 done
 cd ../
 
+# Clean thermo directory
+cd thermo
+for tv in compressibleFluidLut
+do
+    cd $tv
+    wclean
+    cd ../
+done
+cd ../
+
 # Clean solver directory
 cd solvers
 for sv in plasmaArc

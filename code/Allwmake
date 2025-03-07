@@ -10,6 +10,16 @@ do
 done
 cd ../
 
+# Build thermo directory
+cd thermo
+for tv in compressibleFluidLut
+do
+    cd $tv
+    wmake libso
+    cd ../
+done
+cd ../
+
 # Build solver directory
 cd solvers
 for sv in plasmaArc
