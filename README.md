@@ -16,7 +16,7 @@ In addition to the solver itself this repository also contains the material prop
 
 * Thermophysical properties - `compressibleFluidLut` thermo module.
 * Radiation - `greyPlasmaAbsorptionEmission` module (P1 or other emission-aware models are recommended for correct behaviour).
-* Boundary conditions - `limitedTemperature`, `fixedCurrentDensity`, `variableCurrentCurrentDensity`, and `fixedLocationCurrentDensity`.
+* Boundary conditions - `limitedTemperature`, `fixedCurrentDensity`, `fixedLocationCurrentDensity`, and `fixedLocationAlternatingCurrent`.
 
 ### Example cases ###
 
