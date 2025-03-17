@@ -1,6 +1,6 @@
 # README #
 
-A coupled magnetohydrodynamics solver for OpenFOAM, for studying the dynamic behaviour of weakly compressible thermal plasma arcs used in welding and metallurgical arc furnace applications. Live branches track ESI OpenFOAM releases unless otherwise indicated.
+A coupled magnetohydrodynamics solver for OpenFOAM, for studying the dynamic behaviour of weakly compressible thermal plasma arcs used in welding and metallurgical arc furnace applications. Default branch tracks ESI OpenFOAM releases unless otherwise indicated.
 
 Copyright (C) Quinn Reynolds and Mintek 2025-present
 
