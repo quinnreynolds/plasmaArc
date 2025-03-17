@@ -26,7 +26,7 @@ case on a modelling workstation or HPC facility where it will not interfere with
 and adjust the number of processors in `decomposeParDict` as appropriate.
 
 The plasma property dataset for an equimolar mixture of SiO and CO was calculated using 
-(minplascalc)[https://github.com/quinnreynolds/minplascalc] v0.7.0.
+[minplascalc](https://github.com/quinnreynolds/minplascalc) v0.7.0.
 
 This example was modified from a case originally developed by Hákon Valur Haraldsson in 2024 
 during Ph. D. studies at Reykjavík University.

@@ -28,5 +28,5 @@ case on a modelling workstation or HPC facility where it will not interfere with
 and adjust the number of processors in `decomposeParDict` as appropriate.
 
 The plasma property dataset for pure CO was calculated using 
-(minplascalc)[https://github.com/quinnreynolds/minplascalc] v0.7.0.
+[minplascalc](https://github.com/quinnreynolds/minplascalc) v0.7.0.
 
