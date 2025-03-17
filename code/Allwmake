@@ -1,0 +1,30 @@
+#! /bin/sh
+
+# Build boundaries directory
+cd boundaries
+for bv in limitedTemperature fixedCurrentDensity fixedLocationCurrentDensity fixedLocationAlternatingCurrent
+do
+    cd $bv
+    wmake libso
+    cd ../
+done
+cd ../
+
+# Build thermo directory
+cd thermo
+for tv in compressibleFluidLut greyPlasmaAbsorptionEmission
+do
+    cd $tv
+    wmake libso
+    cd ../
+done
+cd ../
+
+# Build solver directory
+cd solvers
+for sv in plasmaArc
+do
+    cd $sv
+    wmake
+    cd ../
+done

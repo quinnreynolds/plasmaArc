@@ -1,0 +1,4 @@
+greyPlasmaAbsorptionEmission.C
+
+LIB = $(FOAM_USER_LIBBIN)/libgreyPlasmaAbsorptionEmission
+

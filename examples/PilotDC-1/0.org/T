@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Web:      www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version  2.0;
+    format   ascii;
+    class    volScalarField;
+    location "0";
+    object   T;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions [0 0 0 1 0 0 0];
+internalField uniform 3000;
+boundaryField
+{
+    cathode
+    {
+        type limitedTemperature;
+        Tbound 4100;
+        upperBoundYN true;
+        value uniform 0;
+    }
+    anode
+    {
+        type limitedTemperature;
+        Tbound 3500;
+        upperBoundYN true;
+        value uniform 0;
+    }
+    electrodewalls
+    {
+        type limitedTemperature;
+        Tbound 4100;
+        upperBoundYN true;
+        value uniform 0;
+    }
+    top
+    {
+        type inletOutlet;
+        inletValue uniform 3000;
+        value uniform 3000;
+    }
+    sides
+    {
+        type limitedTemperature;
+        Tbound 4100;
+        upperBoundYN true;
+        value uniform 0;
+    }
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

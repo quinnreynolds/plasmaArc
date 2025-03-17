@@ -1,0 +1,59 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5.0                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       fluidLutTransport;
+    thermo          fluidLutThermo;
+    equationOfState fluidLutEOS;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+mixture
+{
+    specie
+    {
+        nMoles 1;
+        molWeight 1;
+    }
+    thermodynamics
+    {
+        #include "dataCarbonMonoxide/dataCp.foam";
+    }
+    transport
+    {
+        #include "dataCarbonMonoxide/dataMu.foam";
+        #include "dataCarbonMonoxide/dataTk.foam";
+        #include "dataCarbonMonoxide/dataEk.foam";
+    }
+    equationOfState
+    {
+        pRef            101325.;
+        #include "dataCarbonMonoxide/dataRho.foam";
+    }
+}
+
+calculateCompositionFieldsYN true;
+compositions
+{
+	#includeIfPresent "dataCarbonMonoxide/dataSpecies.foam";
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

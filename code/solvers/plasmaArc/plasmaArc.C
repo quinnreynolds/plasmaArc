@@ -2,8 +2,11 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
+    \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
+-------------------------------------------------------------------------------
+    Copyright (C) 2011-2017 OpenFOAM Foundation
+    Copyright (C) 2019 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -26,15 +29,12 @@ Application
 
 Description
     Transient MHD solver for laminar or turbulent flow of compressible or
-    incompressible, non-isochoric plasma fluids.
+    incompressible plasma fluids.
 
     Uses the flexible PIMPLE (PISO-SIMPLE) solution for time-resolved and
     pseudo-transient simulations.
 
     Based on rhoPimpleFoam.
-
-
-Q Reynolds 2015-2017
 
 \*---------------------------------------------------------------------------*/
 
@@ -49,10 +49,8 @@ Q Reynolds 2015-2017
 #include "fvOptions.H"
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
-
 #include "directionMixedFvPatchFields.H"
 #include "zeroGradientFvPatchField.H"
-
 #include "scalarLookup.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

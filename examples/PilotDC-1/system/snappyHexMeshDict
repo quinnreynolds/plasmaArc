@@ -1,0 +1,164 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2206                                 |
+|   \\  /    A nd           | Web:      www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version  2.0;
+    format   ascii;
+    class    dictionary;
+    location "system";
+    object   snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMesh true;
+snap true;
+addLayers false;
+geometry
+{
+    modeldomain.stl
+    {
+        type triSurfaceMesh;
+        regions
+        {
+            anode
+            {
+                name anode;
+            }
+            cathode
+            {
+                name cathode;
+            }
+            electrodewalls
+            {
+                name electrodewalls;
+            }
+            top
+            {
+                name top;
+            }
+            sides
+            {
+                name sides;
+            }
+        }
+    }
+    refineCone1
+    {
+        type searchableCone;
+        point1 (0 0 0);
+        radius1 0.1;
+        innerRadius1 0;
+        point2 (0 0 0.125);
+        radius2 0.05;
+        innerRadius2 0;
+    }
+    refineCone2
+    {
+        type searchableCone;
+        point1 (0 0 0);
+        radius1 0.05;
+        innerRadius1 0;
+        point2 (0 0 0.125);
+        radius2 0;
+        innerRadius2 0;
+    }
+}
+castellatedMeshControls
+{
+    maxLocalCells 1000000;
+    maxGlobalCells 10000000;
+    minRefinementCells 10;
+    maxLoadUnbalance 0.1;
+    nCellsBetweenLevels 1;
+    features
+    (
+        {file modeldomain.eMesh; level 0;}
+    );
+    refinementSurfaces
+    {
+        modeldomain.stl
+        {
+            level (0 0);
+        }
+    }
+    refinementRegions
+    {
+        refineCone1
+        {
+            mode inside;
+            levels
+            (
+                (1 1)
+            );
+        }
+        refineCone2
+        {
+            mode inside;
+            levels
+            (
+                (1 2)
+            );
+        }
+    }
+    resolveFeatureAngle 60;
+    locationInMesh (0 0 0.05);
+    allowFreeStandingZoneFaces true;
+}
+snapControls
+{
+    nSmoothPatch 3;
+    tolerance 4;
+    nSolveIter 30;
+    nRelaxIter 5;
+    nFeatureSnapIter 10;
+    implicitFeatureSnap false;
+    multiRegionFeatureSnap true;
+}
+refinementRegions
+{
+    refineCone1
+    {
+        mode inside;
+        levels
+        (
+            (1 1)
+        );
+    }
+    refineCone2
+    {
+        mode inside;
+        levels
+        (
+            (1 2)
+        );
+    }
+}
+addLayersControls
+{
+}
+meshQualityControls
+{
+    maxNonOrtho 65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave 80;
+    minFlatness 0.5;
+    minVol 1e-10;
+    minTetQuality 1e-20;
+    minArea -1;
+    minTwist 0.02;
+    minDeterminant 0.001;
+    minFaceWeight 0.02;
+    minVolRatio 0.01;
+    minTriangleTwist -1;
+    nSmoothScale 4;
+    errorReduction 0.75;
+}
+mergeTolerance 1e-06;
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
