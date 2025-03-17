@@ -1,0 +1,10 @@
+#!/bin/bash
+
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+cp -r 0.org 0 > /dev/null 2>&1
+runApplication blockMesh
+runApplication surfaceFeatureExtract
+runApplication snappyHexMesh -overwrite
+runApplication decomposePar
+

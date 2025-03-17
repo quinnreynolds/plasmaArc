@@ -20,8 +20,20 @@ In addition to the solver itself this repository also contains the material prop
 
 ### Example cases ###
 
-* TBD
+See also READMEs in each case subdirectory for more detailed information.
+
+* `IndustrialAC-1`: A large high-current arc in an industrial silicon smelter, using generic time-dependent boundary conditions.
+* `IndustrialAC-2`: A large high-current arc in an industrial silicon smelter, using paired AC boundary conditions.
+* `PilotDC-1`: A low-current arc in a pilot-scale furnace, operating in a CO atmosphere.
+* `PilotDC-2`: A low-current arc in a pilot-scale furnace, operating in an air atmosphere.
 
 ### Who do I talk to? ###
 
 * quinnr@mintek.co.za
+
+### References
+
+* Q.G. Reynolds (2020). Toward computational models of arc dynamics in silicon smelters, in *Proceedings of the 14th International Conference on CFD in the Oil & Gas, Metallurgical and Process Industries (CFD2020)*. Trondheim, Norway: SINTEF Academic Press, 2020, pp. 99-106 (https://www.sintef.no/projectweb/cfd2020/proceedings/)[https://www.sintef.no/projectweb/cfd2020/proceedings/]
+* H.V. Haraldsson, Q.G. Reynolds, G.A. Saevarsdottir, and Y.A. Tesfahunegn (2025). Modeling of Industrial Electric Arcs Using Different Plasma Gas Compositions, *Metallurgical and Materials Transactions B*, 2025, (https://doi.org/10/1007/s11663-024-03397-4)[https://doi.org/10/1007/s11663-024-03397-4]
+
+

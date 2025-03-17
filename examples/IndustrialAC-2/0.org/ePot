@@ -1,0 +1,48 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2312                                 |
+|   \\  /    A nd           | Web:      www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version  2.0;
+    format   ascii;
+    class    volScalarField;
+    location "0";
+    object   ePot;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions [1 2 -3 0 0 -1 0];
+internalField uniform 0;
+boundaryField
+{
+    cathode
+    {
+        type fixedLocationAlternatingCurrent;
+        maxCurrent 50000;
+        currentDensity 20000000.0;
+        frequency 50;
+        theta 0;
+        referencePosition (0 0 0.07);
+        value uniform 0;
+    }
+    anode
+    {
+        type fixedLocationAlternatingCurrent;
+        maxCurrent 50000;
+        currentDensity 20000000.0;
+        frequency 50;
+        theta 180;
+        referencePosition (0 0 0);
+        value uniform 10;
+    }
+    sides
+    {
+        type zeroGradient;
+    }
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

@@ -1,0 +1,140 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          GAMG;
+        smoother        symGaussSeidel;
+        tolerance       1e-6;
+        relTol          0.01;
+        maxIter         20;
+        cacheAgglomeration on;
+    }
+
+    pFinal
+    {
+        solver          PCG;
+        preconditioner
+        {
+            preconditioner  GAMG;
+            smoother        symGaussSeidel;
+            cacheAgglomeration on;
+        }
+
+        tolerance       1e-6;
+        relTol          0;
+        maxIter         20;
+    }
+
+    "rho.*"
+    {
+        $p;
+        tolerance       1e-6;
+        relTol          0;
+    }
+
+    "(U|h|k)"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-7;
+        relTol          0.1;
+    }
+
+    "(U|h|k)Final"
+    {
+        $U;
+        relTol          0;
+    }
+
+    ePot
+    {
+        solver          PCG;
+        preconditioner
+        {
+            preconditioner  GAMG;
+            smoother        symGaussSeidel;
+            cacheAgglomeration on;
+        }
+
+        tolerance       1e-6;
+        relTol          0;
+        maxIter         20;
+    }
+
+    A
+    {
+        solver          PCG;
+        preconditioner
+        {
+            preconditioner  GAMG;
+            smoother        symGaussSeidel;
+            cacheAgglomeration on;
+        }
+
+        tolerance       1e-5;
+        relTol          0;
+        maxIter         20;
+    }
+
+    G
+    {
+        solver          GAMG;
+        smoother        symGaussSeidel;
+        tolerance       1e-5;
+        relTol          0.1;
+        maxIter         20;
+        cacheAgglomeration on;
+    }
+
+    GFinal
+    {
+        solver          PCG;
+        preconditioner
+        {
+            preconditioner  GAMG;
+            smoother        symGaussSeidel;
+            cacheAgglomeration on;
+        }
+
+        tolerance       1e-5;
+        relTol          0;
+        maxIter         20;
+    }
+}
+
+PIMPLE
+{
+    momentumPredictor           yes;
+    nOuterCorrectors            1;
+    nCorrectors                 2;
+    nNonOrthogonalCorrectors    0;
+}
+
+EM
+{
+    emSolverFreq    1;
+    nMaxEMLoops     15;
+}
+
+relaxationFactors
+{
+}
+
+// ************************************************************************* //
