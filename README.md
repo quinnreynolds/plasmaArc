@@ -34,4 +34,4 @@ See also READMEs in each case subdirectory for more detailed information.
 ### References
 
 * Q.G. Reynolds (2021). Toward computational models of arc dynamics in silicon smelters, in *Proceedings of the 14th International Conference on CFD in the Oil & Gas, Metallurgical and Process Industries (CFD2020)*. Trondheim, Norway: SINTEF Academic Press, 2021, pp. 99-106 [https://www.pyrometallurgy.co.za/Mintek/Files/2021Reynolds-CFD2020.pdf]
-* H.V. Haraldsson, Q.G. Reynolds, Y.A. Tesfahunegn, and G.A. Saevarsdottir (2025). Modeling of Industrial Electric Arcs Using Different Plasma Gas Compositions, *Metallurgical and Materials Transactions B*, 2025 [https://doi.org/10/1007/s11663-024-03397-4]
+* H.V. Haraldsson, Q.G. Reynolds, Y.A. Tesfahunegn, and G.A. Saevarsdottir (2025). Modeling of Industrial Electric Arcs Using Different Plasma Gas Compositions, *Metallurgical and Materials Transactions B*, 2025 [https://doi.org/10.1007/s11663-024-03397-4]
