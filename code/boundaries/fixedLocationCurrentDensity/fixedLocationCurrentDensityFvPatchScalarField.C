@@ -178,13 +178,13 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
     }
     
     Pstream::gatherList(procDist);
-    Pstream::scatterList(procDist);
+    Pstream::broadcastList(procDist);
     Pstream::gatherList(procArea);
-    Pstream::scatterList(procArea);
+    Pstream::broadcastList(procArea);
     Pstream::gatherList(procLocalIndex);
-    Pstream::scatterList(procLocalIndex);
+    Pstream::broadcastList(procLocalIndex);
     Pstream::gatherList(procProc);
-    Pstream::scatterList(procProc);
+    Pstream::broadcastList(procProc);
 
     DynamicList<scalar> faceDist, faceArea;
     DynamicList<label> faceLocalIndex, faceProc;
