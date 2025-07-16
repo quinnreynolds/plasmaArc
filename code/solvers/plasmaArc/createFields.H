@@ -76,6 +76,21 @@ volScalarField MachNo
     dimensionedScalar("MachNo", dimensionSet(0,0,0,0,0,0,0), 0)
 );
 
+Info<< "Creating field qc\n" << endl;
+volScalarField qc
+(
+    IOobject
+    (
+        "qc",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+),
+    mesh,
+    dimensionedScalar("qc", dimensionSet(1,0,-3,0,0,0,0), 0)
+);
+
 // Open dictionary for reading
 
 IOdictionary thermoPropertiesDict
