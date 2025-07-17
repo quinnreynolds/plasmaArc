@@ -76,8 +76,38 @@ volScalarField MachNo
     dimensionedScalar("MachNo", dimensionSet(0,0,0,0,0,0,0), 0)
 );
 
+// Info<< "Creating field qc\n" << endl;
+// volScalarField qc
+// (
+//     IOobject
+//     (
+//         "qc",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::NO_READ,
+//         IOobject::AUTO_WRITE
+// ),
+//     mesh,
+//     dimensionedScalar("qc", dimensionSet(1,0,-3,0,0,0,0), 0)
+// );
+
+// Info<< "Creating field qe\n" << endl;
+// volScalarField qe
+// (
+//     IOobject
+//     (
+//         "qe",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::NO_READ,
+//         IOobject::AUTO_WRITE
+// ),
+//     mesh,
+//     dimensionedScalar("qe", dimensionSet(1,0,-3,0,0,0,0), 0)
+// );
+
 Info<< "Creating field qc\n" << endl;
-volScalarField qc
+surfaceScalarField qc
 (
     IOobject
     (
@@ -89,6 +119,21 @@ volScalarField qc
 ),
     mesh,
     dimensionedScalar("qc", dimensionSet(1,0,-3,0,0,0,0), 0)
+);
+
+Info<< "Creating field qe\n" << endl;
+surfaceScalarField qe
+(
+    IOobject
+    (
+        "qe",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+),
+    mesh,
+    dimensionedScalar("qe", dimensionSet(1,0,-3,0,0,0,0), 0)
 );
 
 // Open dictionary for reading
