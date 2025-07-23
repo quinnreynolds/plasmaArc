@@ -13,11 +13,11 @@
     // qc = mag(qcTemp);
     // surfaceScalarField qcTemp(-fvc::interpolate(turbulence->alphaEff()) * fvc::snGrad(he) * mesh.magSf());
     // qc = mag(fvc::reconstruct(qcTemp));
-    qc = -fvc::interpolate(turbulence->alphaEff()) * fvc::snGrad(he);
+    // qc = -fvc::interpolate(turbulence->alphaEff()) * fvc::snGrad(he);
     
     // volVectorField qeTemp(fvc::reconstruct(electronTransportPhi) * he);
     // qe = mag(qeTemp);
-    qe = -electronTransportPhi * fvc::interpolate(he) / mesh.magSf();
+    // qe = -electronTransportPhi * fvc::interpolate(he) / mesh.magSf();
 
     fvScalarMatrix EEqn
     (
@@ -52,4 +52,7 @@
     fvOptions.correct(he);
 
     thermo.correct();
+
+    // tk = thermo.kappa();
+    tk = turbulence->kappaEff();
 }

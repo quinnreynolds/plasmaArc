@@ -106,35 +106,51 @@ volScalarField MachNo
 //     dimensionedScalar("qe", dimensionSet(1,0,-3,0,0,0,0), 0)
 // );
 
-Info<< "Creating field qc\n" << endl;
-surfaceScalarField qc
+// Info<< "Creating field qc\n" << endl;
+// surfaceScalarField qc
+// (
+//     IOobject
+//     (
+//         "qc",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::NO_READ,
+//         IOobject::AUTO_WRITE
+// ),
+//     mesh,
+//     dimensionedScalar("qc", dimensionSet(1,0,-3,0,0,0,0), 0)
+// );
+
+// Info<< "Creating field qe\n" << endl;
+// surfaceScalarField qe
+// (
+//     IOobject
+//     (
+//         "qe",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::NO_READ,
+//         IOobject::AUTO_WRITE
+// ),
+//     mesh,
+//     dimensionedScalar("qe", dimensionSet(1,0,-3,0,0,0,0), 0)
+// );
+
+Info<< "Creating field tk\n" << endl;
+volScalarField tk
 (
     IOobject
     (
-        "qc",
+        "tk",
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
 ),
     mesh,
-    dimensionedScalar("qc", dimensionSet(1,0,-3,0,0,0,0), 0)
+    dimensionedScalar("tk", dimensionSet(1,1,-3,-1,0,0,0), 0.1)
 );
 
-Info<< "Creating field qe\n" << endl;
-surfaceScalarField qe
-(
-    IOobject
-    (
-        "qe",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-),
-    mesh,
-    dimensionedScalar("qe", dimensionSet(1,0,-3,0,0,0,0), 0)
-);
 
 // Open dictionary for reading
 
