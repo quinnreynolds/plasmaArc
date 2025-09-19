@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
     #include "emInclude/createFields.H"
     #include "emInclude/readSolverControls.H"
     #include "createRhoUfIfPresent.H"
+    #include "calculateCompositions.H"
 
     Info<< "\nInitialising surface normals and fraction tensor BCs for A...\n"
         << endl;

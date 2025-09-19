@@ -33,7 +33,7 @@ if (calculateCompositionFieldsYN)
             (
                 IOobject
                 (
-                    "species_" + specI,
+                    "X_species_" + specI,
                     runTime.timeName(),
                     mesh,
                     IOobject::NO_READ,
