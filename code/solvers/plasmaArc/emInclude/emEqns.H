@@ -53,7 +53,11 @@ if (runTime.timeIndex() == 1 || runTime.timeIndex() % emSolverFreq == 0)
         Vector<scalar> bMag(gMax(B) - gMin(B));
         scalar bMagNorm = max(max(bMag.x(), bMag.y()), bMag.z());
         scalar toleranceAx = toleranceA * bMagNorm / bMag.x();
-        scalar toleranceAy = toleranceA * bMagNorm / bMag.y();
+        scalar toleranceAy = 1e10;
+        if (!wedgeGeometryYN)
+        {
+            toleranceAy = toleranceA * bMagNorm / bMag.y();
+        }
         scalar toleranceAz = toleranceA * bMagNorm / bMag.z();
 
         ddtA = dtCorrect * fvc::ddt(A);

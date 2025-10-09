@@ -12,3 +12,5 @@ scalar toleranceA = 10. * ADict.lookupOrDefault<scalar>("tolerance",1e-6);
 const dictionary& emDict = mesh.solutionDict().subDict("EM");
 const int nMaxEMLoops = emDict.lookupOrDefault<int>("nMaxEMLoops", 5);
 const int emSolverFreq = emDict.lookupOrDefault<int>("emSolverFreq", 1);
+// TODO: Add documentation explaining use of wedgeGeometryYN
+const Switch wedgeGeometryYN = emDict.lookupOrDefault<Switch>("wedgeGeometryYN", false);
