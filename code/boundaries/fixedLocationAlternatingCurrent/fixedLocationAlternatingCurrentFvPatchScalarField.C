@@ -206,15 +206,26 @@ void Foam::fixedLocationAlternatingCurrentFvPatchScalarField::updateCoeffs()
             procProc[myProcNo][faceI] = myProcNo;
         }
         // Load the data into the lists, processor-local
-
-        Pstream::gatherList(procDist);
-        Pstream::broadcastList(procDist);
-        Pstream::gatherList(procArea);
-        Pstream::broadcastList(procArea);
-        Pstream::gatherList(procLocalIndex);
-        Pstream::broadcastList(procLocalIndex);
-        Pstream::gatherList(procProc);
-        Pstream::broadcastList(procProc);
+        
+        #if OpenFOAM_VERSION >= 2312
+            Pstream::gatherList(procDist);
+            Pstream::broadcastList(procDist);
+            Pstream::gatherList(procArea);
+            Pstream::broadcastList(procArea);
+            Pstream::gatherList(procLocalIndex);
+            Pstream::broadcastList(procLocalIndex);
+            Pstream::gatherList(procProc);
+            Pstream::broadcastList(procProc);
+        #else 
+            Pstream::gatherList(procDist);
+            Pstream::scatterList(procDist);
+            Pstream::gatherList(procArea);
+            Pstream::scatterList(procArea);
+            Pstream::gatherList(procLocalIndex);
+            Pstream::scatterList(procLocalIndex);
+            Pstream::gatherList(procProc);
+            Pstream::scatterList(procProc);
+        #endif
         // Send and receive the list structures between all processors
 
         DynamicList<scalar> faceDist, faceArea;
