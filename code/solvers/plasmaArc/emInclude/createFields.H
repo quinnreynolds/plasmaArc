@@ -35,7 +35,8 @@ dimensionedScalar constantET
     )
 );
 
-//MVP decay constant - 2D problems only, should be left at default 0 for 3D
+// MVP decay constant - used in 2D cartesian problems only, should be left at 
+// default 0 in all other cases
 dimensionedScalar constantMVP
 (
     dimensionedScalar::lookupOrDefault
