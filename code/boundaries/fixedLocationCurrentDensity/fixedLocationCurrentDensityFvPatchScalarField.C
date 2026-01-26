@@ -177,7 +177,7 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         procProc[myProcNo][faceI] = myProcNo;
     }
     
-    #if OpenFOAM_VERSION >= 2312
+    #if (OPENFOAM >= 2312)
         Pstream::gatherList(procDist);
         Pstream::broadcastList(procDist);
         Pstream::gatherList(procArea);

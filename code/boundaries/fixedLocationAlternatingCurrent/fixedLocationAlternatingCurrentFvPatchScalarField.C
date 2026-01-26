@@ -207,7 +207,7 @@ void Foam::fixedLocationAlternatingCurrentFvPatchScalarField::updateCoeffs()
         }
         // Load the data into the lists, processor-local
         
-        #if OpenFOAM_VERSION >= 2312
+        #if (OPENFOAM >= 2312)
             Pstream::gatherList(procDist);
             Pstream::broadcastList(procDist);
             Pstream::gatherList(procArea);
