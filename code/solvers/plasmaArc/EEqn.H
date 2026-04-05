@@ -36,7 +36,7 @@
             )
           : -dpdt
         )
-      - fvm::laplacian(turbulence->alphaEff(), he)
+      + thermophysicalTransport->divq(he)
       ==
         fvm::Sp(qSourceSp, he)
       + qSourceSc
@@ -54,5 +54,5 @@
     thermo.correct();
 
     // tk = thermo.kappa();
-    tk = turbulence->kappaEff();
+    tk = thermophysicalTransport->kappaEff();
 }

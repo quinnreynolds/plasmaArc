@@ -61,6 +61,12 @@ autoPtr<compressible::momentumTransportModel> turbulence
     )
 );
 
+Info<< "Creating thermophysical transport model\n" << endl;
+autoPtr<fluidThermophysicalTransportModel> thermophysicalTransport
+(
+    fluidThermophysicalTransportModel::New(turbulence(), thermo)
+);
+
 Info<< "Creating field MachNo\n" << endl;
 volScalarField MachNo
 (
