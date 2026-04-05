@@ -44,7 +44,7 @@ if (pimple.transonic())
         fvc::ddt(rho) + psi*correction(fvm::ddt(p))
       + fvc::div(phiHbyA) + fvm::div(phid, p)
      ==
-        fvOptions(psi, p, rho.name())
+        fvModels.source(psi, p, rho.name())
     );
 
     while (pimple.correctNonOrthogonal())
@@ -69,7 +69,7 @@ else
         fvc::ddt(rho) + psi*correction(fvm::ddt(p))
       + fvc::div(phiHbyA)
      ==
-        fvOptions(psi, p, rho.name())
+        fvModels.source(psi, p, rho.name())
     );
 
     while (pimple.correctNonOrthogonal())
@@ -91,7 +91,7 @@ p.relax();
 
 U = HbyA - rAU*fvc::grad(p);
 U.correctBoundaryConditions();
-fvOptions.correct(U);
+fvConstraints.constrain(U);
 K = 0.5*magSqr(U);
 
 if (pressureControl.limit(p))

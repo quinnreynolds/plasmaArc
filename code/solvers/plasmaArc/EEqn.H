@@ -40,16 +40,16 @@
       ==
         fvm::Sp(qSourceSp, he)
       + qSourceSc
-      + fvOptions(rho, he)
+      + fvModels.source(rho, he)
     );
 
     EEqn.relax();
 
-    fvOptions.constrain(EEqn);
+    fvConstraints.constrain(EEqn);
 
     EEqn.solve();
 
-    fvOptions.correct(he);
+    fvConstraints.constrain(he);
 
     thermo.correct();
 
