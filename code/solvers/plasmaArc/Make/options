@@ -25,6 +25,5 @@ EXE_LIBS = \
     -lthermophysicalTransportModels \
     -ldynamicMesh \
     -ldynamicFvMesh \
-    -ltopoChangerFvMesh \
     -lsampling \
     -latmosphericModels
