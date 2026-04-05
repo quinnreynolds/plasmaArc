@@ -54,7 +54,7 @@ limitedTemperatureFvPatchScalarField
 :
     fixedValueFvPatchScalarField(p, iF),
     Tbound_(readScalar(dict.lookup("Tbound"))),
-    upperBoundYN_(dict.lookupOrDefault("upperBoundYN", true))
+    upperBoundYN_(dict.getOrDefault("upperBoundYN", true))
 {
     fvPatchScalarField::operator=
     (
