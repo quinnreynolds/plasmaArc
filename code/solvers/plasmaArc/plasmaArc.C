@@ -41,7 +41,7 @@ Description
 #include "fvCFD.H"
 #include "dynamicFvMesh.H"
 #include "fluidThermo.H"
-#include "turbulentFluidThermoModel.H"
+#include "fluidThermoMomentumTransportModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
 #include "pressureControl.H"
