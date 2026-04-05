@@ -177,25 +177,14 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         procProc[myProcNo][faceI] = myProcNo;
     }
     
-    #if (OPENFOAM >= 2312)
-        Pstream::gatherList(procDist);
-        Pstream::broadcastList(procDist);
-        Pstream::gatherList(procArea);
-        Pstream::broadcastList(procArea);
-        Pstream::gatherList(procLocalIndex);
-        Pstream::broadcastList(procLocalIndex);
-        Pstream::gatherList(procProc);
-        Pstream::broadcastList(procProc);
-    #else 
-        Pstream::gatherList(procDist);
-        Pstream::scatterList(procDist);
-        Pstream::gatherList(procArea);
-        Pstream::scatterList(procArea);
-        Pstream::gatherList(procLocalIndex);
-        Pstream::scatterList(procLocalIndex);
-        Pstream::gatherList(procProc);
-        Pstream::scatterList(procProc);
-    #endif
+    Pstream::gatherList(procDist);
+    Pstream::scatterList(procDist);
+    Pstream::gatherList(procArea);
+    Pstream::scatterList(procArea);
+    Pstream::gatherList(procLocalIndex);
+    Pstream::scatterList(procLocalIndex);
+    Pstream::gatherList(procProc);
+    Pstream::scatterList(procProc);
 
     DynamicList<scalar> faceDist, faceArea;
     DynamicList<label> faceLocalIndex, faceProc;
