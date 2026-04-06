@@ -34,7 +34,7 @@ License
 
 Foam::scalar Foam::fixedLocationCurrentDensityFvPatchScalarField::t() const
 {
-    return db().time().timeOutputValue();
+    return db().time().userTimeValue();
 }
 
 
@@ -67,8 +67,8 @@ fixedLocationCurrentDensityFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(p, iF),
-    current_(Function1<scalar>::New("current", dict)),
-    currentDensity_(Function1<scalar>::New("currentDensity", dict)),
+    current_(Function1<scalar>::New("current", unitConversion(dimless), unitConversion(dimless), dict)),
+    currentDensity_(Function1<scalar>::New("currentDensity", unitConversion(dimless), unitConversion(dimless), dict)),
     referencePosition_(vector(dict.lookup("referencePosition")))
 {
     refGrad() = Zero;
@@ -91,21 +91,8 @@ fixedLocationCurrentDensityFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(ptf, p, iF, mapper),
-    current_(ptf.current_.clone()),
-    currentDensity_(ptf.currentDensity_.clone()),
-    referencePosition_(ptf.referencePosition_)
-{}
-
-
-Foam::fixedLocationCurrentDensityFvPatchScalarField::
-fixedLocationCurrentDensityFvPatchScalarField
-(
-    const fixedLocationCurrentDensityFvPatchScalarField& ptf
-)
-:
-    mixedFvPatchScalarField(ptf),
-    current_(ptf.current_.clone()),
-    currentDensity_(ptf.currentDensity_.clone()),
+    current_(ptf.current_->clone()),
+    currentDensity_(ptf.currentDensity_->clone()),
     referencePosition_(ptf.referencePosition_)
 {}
 
@@ -118,20 +105,30 @@ fixedLocationCurrentDensityFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(ptf, iF),
-    current_(ptf.current_.clone()),
-    currentDensity_(ptf.currentDensity_.clone()),
+    current_(ptf.current_->clone()),
+    currentDensity_(ptf.currentDensity_->clone()),
     referencePosition_(ptf.referencePosition_)
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::fixedLocationCurrentDensityFvPatchScalarField::autoMap
+void Foam::fixedLocationCurrentDensityFvPatchScalarField::map
 (
+    const fvPatchScalarField& ptf,
     const fvPatchFieldMapper& m
 )
 {
-    mixedFvPatchScalarField::autoMap(m);
+    mixedFvPatchScalarField::map(ptf, m);
+}
+
+
+void Foam::fixedLocationCurrentDensityFvPatchScalarField::reset
+(
+    const fvPatchScalarField& ptf
+)
+{
+    mixedFvPatchScalarField::reset(ptf);
 }
 
 
@@ -231,10 +228,10 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::write
 ) const
 {
     fvPatchScalarField::write(os);
-    current_->writeData(os);
-    currentDensity_->writeData(os);
-    os.writeEntry("referencePosition", referencePosition_);
-    writeEntry("value", os);
+    writeEntry(os, unitConversion(dimless), unitConversion(dimless), *current_);
+    writeEntry(os, unitConversion(dimless), unitConversion(dimless), *currentDensity_);
+    writeEntry(os, "referencePosition", referencePosition_);
+    writeEntry(os, "value", *this);
 }
 
 

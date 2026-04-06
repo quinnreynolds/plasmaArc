@@ -34,7 +34,7 @@ License
 
 Foam::scalar Foam::fixedLocationAlternatingCurrentFvPatchScalarField::t() const
 {
-    return db().time().timeOutputValue();
+    return db().time().userTimeValue();
 }
 
 
@@ -101,22 +101,7 @@ fixedLocationAlternatingCurrentFvPatchScalarField
     const fvPatchFieldMapper& mapper
 )
 :
-    mixedFvPatchScalarField(ptf),
-    current_(ptf.current_),
-    currentDensity_(ptf.currentDensity_),
-    frequency_(ptf.frequency_),
-    theta_(ptf.theta_),
-    referencePosition_(ptf.referencePosition_)
-{}
-
-
-Foam::fixedLocationAlternatingCurrentFvPatchScalarField::
-fixedLocationAlternatingCurrentFvPatchScalarField
-(
-    const fixedLocationAlternatingCurrentFvPatchScalarField& ptf
-)
-:
-    mixedFvPatchScalarField(ptf),
+    mixedFvPatchScalarField(ptf, p, iF, mapper),
     current_(ptf.current_),
     currentDensity_(ptf.currentDensity_),
     frequency_(ptf.frequency_),
@@ -143,12 +128,22 @@ fixedLocationAlternatingCurrentFvPatchScalarField
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::fixedLocationAlternatingCurrentFvPatchScalarField::autoMap
+void Foam::fixedLocationAlternatingCurrentFvPatchScalarField::map
 (
+    const fvPatchScalarField& ptf,
     const fvPatchFieldMapper& m
 )
 {
-    mixedFvPatchScalarField::autoMap(m);
+    mixedFvPatchScalarField::map(ptf, m);
+}
+
+
+void Foam::fixedLocationAlternatingCurrentFvPatchScalarField::reset
+(
+    const fvPatchScalarField& ptf
+)
+{
+    mixedFvPatchScalarField::reset(ptf);
 }
 
 
@@ -275,12 +270,12 @@ void Foam::fixedLocationAlternatingCurrentFvPatchScalarField::write
 ) const
 {
     fvPatchScalarField::write(os);
-    os.writeEntry("maxCurrent", current_);
-    os.writeEntry("currentDensity", currentDensity_);
-    os.writeEntry("frequency", frequency_);
-    os.writeEntry("theta", theta_);
-    os.writeEntry("referencePosition", referencePosition_);
-    writeEntry("value", os);
+    writeEntry(os, "maxCurrent", current_);
+    writeEntry(os, "currentDensity", currentDensity_);
+    writeEntry(os, "frequency", frequency_);
+    writeEntry(os, "theta", theta_);
+    writeEntry(os, "referencePosition", referencePosition_);
+    writeEntry(os, "value", *this);
 }
 
 

@@ -54,7 +54,7 @@ limitedTemperatureFvPatchScalarField
 :
     fixedValueFvPatchScalarField(p, iF),
     Tbound_(readScalar(dict.lookup("Tbound"))),
-    upperBoundYN_(dict.getOrDefault("upperBoundYN", true))
+    upperBoundYN_(dict.lookupOrDefault("upperBoundYN", true))
 {
     fvPatchScalarField::operator=
     (
@@ -81,18 +81,6 @@ limitedTemperatureFvPatchScalarField
 Foam::limitedTemperatureFvPatchScalarField::
 limitedTemperatureFvPatchScalarField
 (
-    const limitedTemperatureFvPatchScalarField& ptf
-)
-:
-    fixedValueFvPatchScalarField(ptf),
-    Tbound_(ptf.Tbound_),
-    upperBoundYN_(ptf.upperBoundYN_)
-{}
-
-
-Foam::limitedTemperatureFvPatchScalarField::
-limitedTemperatureFvPatchScalarField
-(
     const limitedTemperatureFvPatchScalarField& ptf,
     const DimensionedField<scalar, volMesh>& iF
 )
@@ -105,12 +93,22 @@ limitedTemperatureFvPatchScalarField
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::limitedTemperatureFvPatchScalarField::autoMap
+void Foam::limitedTemperatureFvPatchScalarField::map
 (
+    const fvPatchScalarField& ptf,
     const fvPatchFieldMapper& m
 )
 {
-    fixedValueFvPatchScalarField::autoMap(m);
+    fixedValueFvPatchScalarField::map(ptf, m);
+}
+
+
+void Foam::limitedTemperatureFvPatchScalarField::reset
+(
+    const fvPatchScalarField& ptf
+)
+{
+    fixedValueFvPatchScalarField::reset(ptf);
 }
 
 
@@ -169,9 +167,9 @@ void Foam::limitedTemperatureFvPatchScalarField::write
 ) const
 {
     fvPatchScalarField::write(os);
-    os.writeEntry("Tbound", Tbound_);
-    os.writeEntry("upperBoundYN", upperBoundYN_);
-    writeEntry("value", os);
+    writeEntry(os, "Tbound", Tbound_);
+    writeEntry(os, "upperBoundYN", upperBoundYN_);
+    writeEntry(os, "value", *this);
 }
 
 

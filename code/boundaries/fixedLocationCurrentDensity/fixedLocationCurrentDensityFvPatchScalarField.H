@@ -141,18 +141,16 @@ public:
             const fvPatchFieldMapper&
         );
 
-        //- Construct as copy
-        fixedLocationCurrentDensityFvPatchScalarField
-        (
-            const fixedLocationCurrentDensityFvPatchScalarField&
-        );
-
         //- Construct and return a clone
         virtual tmp<fvPatchScalarField> clone() const
         {
             return tmp<fvPatchScalarField>
             (
-                new fixedLocationCurrentDensityFvPatchScalarField(*this)
+                new fixedLocationCurrentDensityFvPatchScalarField
+                (
+                    *this,
+                    this->internalField()
+                )
             );
         }
 
@@ -185,10 +183,14 @@ public:
         // Mapping functions
 
             //- Map (and resize as needed) from self given a mapping object
-            virtual void autoMap
+            virtual void map
             (
+                const fvPatchScalarField&,
                 const fvPatchFieldMapper&
             );
+
+            //- Reset the fvPatchField to the given fvPatchField
+            virtual void reset(const fvPatchScalarField&);
 
             //- Reverse map the given fvPatchField onto this fvPatchField
             virtual void rmap

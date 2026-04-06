@@ -81,18 +81,7 @@ fixedCurrentDensityFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(ptf, p, iF, mapper),
-    currentDensity_(ptf.currentDensity_, mapper)
-{}
-
-
-Foam::fixedCurrentDensityFvPatchScalarField::
-fixedCurrentDensityFvPatchScalarField
-(
-    const fixedCurrentDensityFvPatchScalarField& ptf
-)
-:
-    mixedFvPatchScalarField(ptf),
-    currentDensity_(ptf.currentDensity_)
+    currentDensity_(mapper(ptf.currentDensity_))
 {}
 
 
@@ -110,13 +99,28 @@ fixedCurrentDensityFvPatchScalarField
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void Foam::fixedCurrentDensityFvPatchScalarField::autoMap
+void Foam::fixedCurrentDensityFvPatchScalarField::map
 (
+    const fvPatchScalarField& ptf,
     const fvPatchFieldMapper& m
 )
 {
-    mixedFvPatchScalarField::autoMap(m);
-    currentDensity_.autoMap(m);
+    mixedFvPatchScalarField::map(ptf, m);
+    const fixedCurrentDensityFvPatchScalarField& tiptf =
+        refCast<const fixedCurrentDensityFvPatchScalarField>(ptf);
+    m(currentDensity_, tiptf.currentDensity_);
+}
+
+
+void Foam::fixedCurrentDensityFvPatchScalarField::reset
+(
+    const fvPatchScalarField& ptf
+)
+{
+    mixedFvPatchScalarField::reset(ptf);
+    const fixedCurrentDensityFvPatchScalarField& tiptf =
+        refCast<const fixedCurrentDensityFvPatchScalarField>(ptf);
+    currentDensity_ = tiptf.currentDensity_;
 }
 
 
@@ -163,8 +167,8 @@ void Foam::fixedCurrentDensityFvPatchScalarField::write
 ) const
 {
     fvPatchScalarField::write(os);
-    currentDensity_.writeEntry("currentDensity", os);
-    writeEntry("value", os);
+    writeEntry(os, "currentDensity", currentDensity_);
+    writeEntry(os, "value", *this);
 }
 
 
