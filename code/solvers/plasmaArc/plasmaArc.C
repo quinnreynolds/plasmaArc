@@ -39,7 +39,6 @@ Description
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "dynamicFvMesh.H"
 #include "fluidThermo.H"
 #include "fluidThermoMomentumTransportModel.H"
 #include "fluidThermophysicalTransportModel.H"
@@ -62,14 +61,16 @@ int main(int argc, char *argv[])
     #include "postProcess.H"
     #include "setRootCaseLists.H"
     #include "createTime.H"
-    #include "createDynamicFvMesh.H"
-    #include "createDyMControls.H"
+    #include "createMesh.H"
+    const bool correctPhi = false;
+    const bool checkMeshCourantNo = false;
+    const bool moveMeshOuterCorrectors = false;
     #include "initContinuityErrs.H"
     #include "createRDeltaT.H"
     #include "createFields.H"
     #include "emInclude/createFields.H"
     #include "emInclude/readSolverControls.H"
-    #include "createRhoUfIfPresent.H"
+    autoPtr<surfaceVectorField> rhoUf;
     #include "calculateCompositions.H"
 
     Info<< "\nInitialising surface normals and fraction tensor BCs for A...\n"
@@ -91,8 +92,6 @@ int main(int argc, char *argv[])
 
     while (runTime.run())
     {
-        #include "readDyMControls.H"
- 
         // Store divrhoU from the previous mesh so that it can be mapped
         // and used in correctPhi to ensure the corrected phi has the
         // same divergence
@@ -130,41 +129,6 @@ int main(int argc, char *argv[])
         //Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            if (pimple.firstIter() || moveMeshOuterCorrectors)
-            {
-                // Store momentum to set rhoUf for introduced faces.
-                autoPtr<volVectorField> rhoU;
-                if (rhoUf.valid())
-                {
-                    rhoU.reset(new volVectorField("rhoU", rho*U));
-                }
-
-                // Do any mesh changes
-                mesh.controlledUpdate();
-
-                if (mesh.changing())
-                {
-                    MRF.update();
-
-                    if (correctPhi)
-                    {
-                        // Calculate absolute flux
-                        // from the mapped surface velocity
-                        phi = mesh.Sf() & rhoUf();
-
-                        #include "correctPhi.H"
-
-                        // Make the fluxes relative to the mesh-motion
-                        fvc::makeRelative(phi, rho, U);
-                    }
-
-                    if (checkMeshCourantNo)
-                    {
-                        #include "meshCourantNo.H"
-                    }
-                }
-            }
-
             if (pimple.firstIter() && !pimple.SIMPLErho())
             {
                 #include "rhoEqn.H"

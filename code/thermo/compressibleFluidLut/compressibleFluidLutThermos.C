@@ -26,8 +26,6 @@ License
 #include "rhoThermo.H"
 #include "makeThermo.H"
 
-#include "makeReactionThermo.H"
-#include "rhoReactionThermo.H"
 
 #include "specie.H"
 #include "fluidLutThermo.H"
@@ -41,7 +39,6 @@ License
 
 #include "heRhoThermo.H"
 #include "pureMixture.H"
-#include "multiComponentMixture.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -69,19 +66,6 @@ makeThermos
     pureMixture,
     fluidLutTransport,
     sensibleInternalEnergy,
-    fluidLutThermo,
-    fluidLutEOS,
-    specie
-);
-
-makeReactionThermos
-(
-    rhoThermo,
-    rhoReactionThermo,
-    heRhoThermo,
-    multiComponentMixture,
-    fluidLutTransport,
-    sensibleEnthalpy,
     fluidLutThermo,
     fluidLutEOS,
     specie
