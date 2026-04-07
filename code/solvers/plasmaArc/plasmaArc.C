@@ -57,12 +57,13 @@ Description
 #include "fvcSmooth.H"
 #include "directionMixedFvPatchFields.H"
 #include "zeroGradientFvPatchField.H"
-#include "scalarLookup.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
 {
+    using namespace Foam;
+    #include "scalarLookup.H"
     #include "postProcess.H"
     #include "setRootCase.H"
     #include "createTime.H"

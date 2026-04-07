@@ -45,8 +45,6 @@ volVectorField U
 
 #include "compressibleCreatePhi.H"
 
-mesh.setFluxRequired(p.name());
-
 Info<< "Creating turbulence model\n" << endl;
 autoPtr<compressible::momentumTransportModel> turbulence
 (
