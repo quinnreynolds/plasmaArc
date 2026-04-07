@@ -23,9 +23,8 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "rhoThermo.H"
-#include "makeThermo.H"
-
+#include "rhoFluidThermo.H"
+#include "makeFluidThermo.H"
 
 #include "specie.H"
 #include "fluidLutThermo.H"
@@ -37,7 +36,6 @@ License
 
 #include "fluidLutEOS.H"
 
-#include "heRhoThermo.H"
 #include "pureMixture.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -45,31 +43,21 @@ License
 namespace Foam
 {
 
+// Typedef the full thermo physics types with simple identifiers
+// (required because makeFluidThermo uses token concatenation for typedef names)
+typedef
+    fluidLutTransport<sensibleEnthalpy<fluidLutThermo<fluidLutEOS<specie>>>>
+    fluidLutHThermoPhysics;
+
+typedef
+    fluidLutTransport<sensibleInternalEnergy<fluidLutThermo<fluidLutEOS<specie>>>>
+    fluidLutEThermoPhysics;
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-makeThermos
-(
-    rhoThermo,
-    heRhoThermo,
-    pureMixture,
-    fluidLutTransport,
-    sensibleEnthalpy,
-    fluidLutThermo,
-    fluidLutEOS,
-    specie
-);
+makeFluidThermo(rhoFluidThermo, pureMixture, fluidLutHThermoPhysics);
 
-makeThermos
-(
-    rhoThermo,
-    heRhoThermo,
-    pureMixture,
-    fluidLutTransport,
-    sensibleInternalEnergy,
-    fluidLutThermo,
-    fluidLutEOS,
-    specie
-);
+makeFluidThermo(rhoFluidThermo, pureMixture, fluidLutEThermoPhysics);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

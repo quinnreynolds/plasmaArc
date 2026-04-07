@@ -21,7 +21,7 @@ volScalarField rho
     IOobject
     (
         "rho",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -35,7 +35,7 @@ volVectorField U
     IOobject
     (
         "U",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -44,8 +44,6 @@ volVectorField U
 );
 
 #include "compressibleCreatePhi.H"
-
-pressureControl pressureControl(p, rho, pimple.dict(), false);
 
 mesh.setFluxRequired(p.name());
 
@@ -73,7 +71,7 @@ volScalarField MachNo
     IOobject
     (
         "MachNo",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
@@ -88,7 +86,7 @@ volScalarField MachNo
 //     IOobject
 //     (
 //         "qc",
-//         runTime.timeName(),
+//         runTime.name(),
 //         mesh,
 //         IOobject::NO_READ,
 //         IOobject::AUTO_WRITE
@@ -103,7 +101,7 @@ volScalarField MachNo
 //     IOobject
 //     (
 //         "qe",
-//         runTime.timeName(),
+//         runTime.name(),
 //         mesh,
 //         IOobject::NO_READ,
 //         IOobject::AUTO_WRITE
@@ -118,7 +116,7 @@ volScalarField MachNo
 //     IOobject
 //     (
 //         "qc",
-//         runTime.timeName(),
+//         runTime.name(),
 //         mesh,
 //         IOobject::NO_READ,
 //         IOobject::AUTO_WRITE
@@ -133,7 +131,7 @@ volScalarField MachNo
 //     IOobject
 //     (
 //         "qe",
-//         runTime.timeName(),
+//         runTime.name(),
 //         mesh,
 //         IOobject::NO_READ,
 //         IOobject::AUTO_WRITE
@@ -148,7 +146,7 @@ volScalarField tk
     IOobject
     (
         "tk",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
@@ -197,7 +195,7 @@ volScalarField ekSp
     IOobject
     (
         "ekSp",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::NO_READ,
         IOobject::NO_WRITE

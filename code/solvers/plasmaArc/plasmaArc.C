@@ -38,13 +38,18 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
-#include "fvCFD.H"
+#include "Time.H"
+#include "fvMesh.H"
+#include "fvc.H"
+#include "fvMatrices.H"
+#include "volFields.H"
+#include "surfaceFields.H"
+#include "argList.H"
 #include "fluidThermo.H"
-#include "fluidThermoMomentumTransportModel.H"
+#include "compressibleMomentumTransportModel.H"
 #include "fluidThermophysicalTransportModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
-#include "pressureControl.H"
 #include "CorrectPhi.H"
 #include "fvModels.H"
 #include "fvConstraints.H"
@@ -59,14 +64,11 @@ Description
 int main(int argc, char *argv[])
 {
     #include "postProcess.H"
-    #include "setRootCaseLists.H"
+    #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
-    const bool correctPhi = false;
-    const bool checkMeshCourantNo = false;
-    const bool moveMeshOuterCorrectors = false;
+    const bool LTS = false;
     #include "initContinuityErrs.H"
-    #include "createRDeltaT.H"
     #include "createFields.H"
     #include "emInclude/createFields.H"
     #include "emInclude/readSolverControls.H"
@@ -80,11 +82,8 @@ int main(int argc, char *argv[])
 
     turbulence->validate();
 
-    if (!LTS)
-    {
-        #include "compressibleCourantNo.H"
-        #include "setInitialDeltaT.H"
-    }
+    #include "compressibleCourantNo.H"
+    #include "setInitialDeltaT.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -108,19 +107,12 @@ int main(int argc, char *argv[])
             );
         }
 
-        if (LTS)
-        {
-            #include "setRDeltaT.H"
-        }
-        else
-        {
-            #include "compressibleCourantNo.H"
-            #include "setDeltaT.H"
-        }
+        #include "compressibleCourantNo.H"
+        #include "setDeltaT.H"
 
         ++runTime;
 
-        Info<< "Time = " << runTime.timeName() << nl << endl;
+        Info<< "Time = " << runTime.name() << nl << endl;
 
         //update EM transport fields and solve
         #include "calculateEk.H"
@@ -150,10 +142,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        if (!mesh.steady())
-        {
-            rho = thermo.rho();
-        }
+        rho = thermo.rho();
 
         #include "calculateMachNo.H"
 

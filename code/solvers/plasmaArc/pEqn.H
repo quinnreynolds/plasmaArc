@@ -94,20 +94,17 @@ U.correctBoundaryConditions();
 fvConstraints.constrain(U);
 K = 0.5*magSqr(U);
 
-if (pressureControl.limit(p))
-{
-    p.correctBoundaryConditions();
-}
-
-thermo.correctRho(psi*p - psip0, rhoMin, rhoMax) ;
+thermo.correctRho(psi*p - psip0);
 
 #include "rhoEqn.H"
-#include "compressibleContinuityErrs.H"
 
 rho = thermo.rho();
 
 // Correct rhoUf if the mesh is moving
-fvc::correctRhoUf(rhoUf, rho, U, phi);
+if (rhoUf.valid())
+{
+    fvc::correctRhoUf(rhoUf, rho, U, phi);
+}
 
 if (thermo.dpdt())
 {
