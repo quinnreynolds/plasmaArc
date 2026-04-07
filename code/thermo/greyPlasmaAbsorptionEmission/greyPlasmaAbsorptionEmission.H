@@ -43,7 +43,7 @@ SourceFiles
 
 namespace Foam
 {
-namespace radiation
+namespace radiationModels
 {
 
 /*---------------------------------------------------------------------------*\

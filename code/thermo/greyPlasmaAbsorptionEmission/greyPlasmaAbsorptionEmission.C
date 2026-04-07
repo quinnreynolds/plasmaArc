@@ -30,7 +30,7 @@ License
 
 namespace Foam
 {
-    namespace radiation
+    namespace radiationModels
     {
         defineTypeNameAndDebug(greyPlasmaAbsorptionEmission, 0);
 
@@ -46,7 +46,7 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::radiation::greyPlasmaAbsorptionEmission::greyPlasmaAbsorptionEmission
+Foam::radiationModels::greyPlasmaAbsorptionEmission::greyPlasmaAbsorptionEmission
 (
     const dictionary& dict,
     const fvMesh& mesh
@@ -65,14 +65,14 @@ Foam::radiation::greyPlasmaAbsorptionEmission::greyPlasmaAbsorptionEmission
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-Foam::radiation::greyPlasmaAbsorptionEmission::~greyPlasmaAbsorptionEmission()
+Foam::radiationModels::greyPlasmaAbsorptionEmission::~greyPlasmaAbsorptionEmission()
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 Foam::tmp<Foam::volScalarField>
-Foam::radiation::greyPlasmaAbsorptionEmission::aCont(const label bandI) const
+Foam::radiationModels::greyPlasmaAbsorptionEmission::aCont(const label bandI) const
 {
     tmp<volScalarField> ta
     (
@@ -122,7 +122,7 @@ Foam::radiation::greyPlasmaAbsorptionEmission::aCont(const label bandI) const
 
 
 Foam::tmp<Foam::volScalarField>
-Foam::radiation::greyPlasmaAbsorptionEmission::eCont(const label bandI) const
+Foam::radiationModels::greyPlasmaAbsorptionEmission::eCont(const label bandI) const
 {
     tmp<volScalarField> te
     (
@@ -172,7 +172,7 @@ Foam::radiation::greyPlasmaAbsorptionEmission::eCont(const label bandI) const
 
 
 Foam::tmp<Foam::volScalarField>
-Foam::radiation::greyPlasmaAbsorptionEmission::ECont(const label bandI) const
+Foam::radiationModels::greyPlasmaAbsorptionEmission::ECont(const label bandI) const
 {
     tmp<volScalarField> tE
     (

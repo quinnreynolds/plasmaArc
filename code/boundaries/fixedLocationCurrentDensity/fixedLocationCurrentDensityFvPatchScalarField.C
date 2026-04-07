@@ -91,8 +91,8 @@ fixedLocationCurrentDensityFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(ptf, p, iF, mapper),
-    current_(ptf.current_->clone()),
-    currentDensity_(ptf.currentDensity_->clone()),
+    current_(ptf.current_->clone().ptr()),
+    currentDensity_(ptf.currentDensity_->clone().ptr()),
     referencePosition_(ptf.referencePosition_)
 {}
 
@@ -105,8 +105,8 @@ fixedLocationCurrentDensityFvPatchScalarField
 )
 :
     mixedFvPatchScalarField(ptf, iF),
-    current_(ptf.current_->clone()),
-    currentDensity_(ptf.currentDensity_->clone()),
+    current_(ptf.current_->clone().ptr()),
+    currentDensity_(ptf.currentDensity_->clone().ptr()),
     referencePosition_(ptf.referencePosition_)
 {}
 
