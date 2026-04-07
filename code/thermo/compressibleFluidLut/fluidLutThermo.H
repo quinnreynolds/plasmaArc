@@ -119,8 +119,8 @@ public:
         //- Construct from Istream
         fluidLutThermo(Istream&);
 
-        //- Construct from dictionary
-        fluidLutThermo(const dictionary& dict);
+        //- Construct from name and dictionary
+        fluidLutThermo(const word& name, const dictionary& dict);
 
         //- Construct as named copy
         inline fluidLutThermo(const word&, const fluidLutThermo&);
@@ -152,17 +152,20 @@ public:
             //- Heat capacity at constant pressure [J/(kg K)]
             inline scalar Cp(const scalar p, const scalar T) const;
 
-            //- Absolute Enthalpy [J/kg]
-            inline scalar Ha(const scalar p, const scalar T) const;
+            //- Absolute enthalpy [J/kg]
+            inline scalar ha(const scalar p, const scalar T) const;
 
             //- Sensible enthalpy [J/kg]
-            inline scalar Hs(const scalar p, const scalar T) const;
+            inline scalar hs(const scalar p, const scalar T) const;
 
-            //- Chemical enthalpy [J/kg]
-            inline scalar Hc() const;
+            //- Enthalpy of formation [J/kg]
+            inline scalar hf() const;
 
-            //- Entropy [J/(kg K)]
-            inline scalar S(const scalar p, const scalar T) const;
+            //- Entropy [J/kg/K]
+            inline scalar s(const scalar p, const scalar T) const;
+
+            //- Gibbs free energy of the mixture in the standard state [J/kg]
+            inline scalar gStd(const scalar T) const;
 
             #include "HtoEthermo.H"
 

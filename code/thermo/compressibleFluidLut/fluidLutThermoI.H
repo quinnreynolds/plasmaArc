@@ -145,9 +145,9 @@ inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::Cp
 
 
 template<class EquationOfState>
-inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::Hs
+inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::hs
 (
-    const scalar p, 
+    const scalar p,
     const scalar T
 ) const
 {
@@ -169,35 +169,43 @@ inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::Hs
 
 
 template<class EquationOfState>
-inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::Ha
+inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::ha
 (
-    const scalar p, 
+    const scalar p,
     const scalar T
 ) const
 {
-    notImplemented("fluidLutThermo::Ha");
+    return hs(p, T) + hf();
+}
+
+
+template<class EquationOfState>
+inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::hf() const
+{
+    return 0;
+}
+
+
+template<class EquationOfState>
+inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::s
+(
+    const scalar p,
+    const scalar T
+) const
+{
+    notImplemented("fluidLutThermo::s");
 
     return 0;
 }
 
 
 template<class EquationOfState>
-inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::Hc() const
-{
-    notImplemented("fluidLutThermo::Hc");
-
-    return 0.;
-}
-
-
-template<class EquationOfState>
-inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::S
+inline Foam::scalar Foam::fluidLutThermo<EquationOfState>::gStd
 (
-    const scalar p, 
     const scalar T
 ) const
 {
-    notImplemented("fluidLutThermo::S");
+    notImplemented("fluidLutThermo::gStd");
 
     return 0;
 }

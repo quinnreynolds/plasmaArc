@@ -45,12 +45,29 @@ namespace Foam
 
 // Typedef the full thermo physics types with simple identifiers
 // (required because makeFluidThermo uses token concatenation for typedef names)
+// v13 composition: Transport<species::thermo<Thermo<EOS<Specie>>, Energy>>
+// The species::thermo<> middle layer bridges the Thermo API with the Energy
+// mapping type (sensibleEnthalpy/sensibleInternalEnergy).
 typedef
-    fluidLutTransport<sensibleEnthalpy<fluidLutThermo<fluidLutEOS<specie>>>>
+    fluidLutTransport
+    <
+        species::thermo
+        <
+            fluidLutThermo<fluidLutEOS<specie>>,
+            sensibleEnthalpy
+        >
+    >
     fluidLutHThermoPhysics;
 
 typedef
-    fluidLutTransport<sensibleInternalEnergy<fluidLutThermo<fluidLutEOS<specie>>>>
+    fluidLutTransport
+    <
+        species::thermo
+        <
+            fluidLutThermo<fluidLutEOS<specie>>,
+            sensibleInternalEnergy
+        >
+    >
     fluidLutEThermoPhysics;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

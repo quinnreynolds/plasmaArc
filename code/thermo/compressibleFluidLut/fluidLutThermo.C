@@ -53,9 +53,13 @@ Foam::fluidLutThermo<equationOfState>::fluidLutThermo(Istream& is)
 
 
 template<class equationOfState>
-Foam::fluidLutThermo<equationOfState>::fluidLutThermo(const dictionary& dict)
+Foam::fluidLutThermo<equationOfState>::fluidLutThermo
+(
+    const word& name,
+    const dictionary& dict
+)
 :
-    equationOfState(dict),
+    equationOfState(name, dict),
     CpStartT_(readScalar(dict.subDict("thermodynamics").subDict("CpLookupTable").lookup("startT"))),
     CpDeltaT_(readScalar(dict.subDict("thermodynamics").subDict("CpLookupTable").lookup("deltaT"))),
     CpData_(dict.subDict("thermodynamics").subDict("CpLookupTable").lookup("dataTable"))

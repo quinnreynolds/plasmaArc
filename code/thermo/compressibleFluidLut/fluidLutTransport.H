@@ -127,8 +127,8 @@ public:
         //- Construct from Istream
         fluidLutTransport(Istream&);
 
-        //- Construct from dictionary
-        fluidLutTransport(const dictionary& dict);
+        //- Construct from name and dictionary
+        fluidLutTransport(const word& name, const dictionary& dict);
 
         //- Construct and return a clone
         inline autoPtr<fluidLutTransport> clone() const;

@@ -55,9 +55,9 @@ Foam::fluidLutEOS<Specie>::fluidLutEOS(Istream& is)
 
 
 template<class Specie>
-Foam::fluidLutEOS<Specie>::fluidLutEOS(const dictionary& dict)
+Foam::fluidLutEOS<Specie>::fluidLutEOS(const word& name, const dictionary& dict)
 :
-    Specie(dict),
+    Specie(name, dict),
     pRef_(readScalar(dict.subDict("equationOfState").lookup("pRef"))),
     rhoStartT_(readScalar(dict.subDict("equationOfState").subDict("rhoLookupTable").lookup("startT"))),
     rhoDeltaT_(readScalar(dict.subDict("equationOfState").subDict("rhoLookupTable").lookup("deltaT"))),

@@ -44,9 +44,13 @@ Foam::fluidLutTransport<Thermo>::fluidLutTransport(Istream& is)
 
 
 template<class Thermo>
-Foam::fluidLutTransport<Thermo>::fluidLutTransport(const dictionary& dict)
+Foam::fluidLutTransport<Thermo>::fluidLutTransport
+(
+    const word& name,
+    const dictionary& dict
+)
 :
-    Thermo(dict),
+    Thermo(name, dict),
     muStartT_(readScalar(dict.subDict("transport").subDict("muLookupTable").lookup("startT"))),
     muDeltaT_(readScalar(dict.subDict("transport").subDict("muLookupTable").lookup("deltaT"))),
     muData_(dict.subDict("transport").subDict("muLookupTable").lookup("dataTable")),

@@ -124,8 +124,8 @@ public:
         //- Construct from Istream
         fluidLutEOS(Istream&);
 
-        //- Construct from dictionary
-        fluidLutEOS(const dictionary& dict);
+        //- Construct from name and dictionary
+        fluidLutEOS(const word& name, const dictionary& dict);
 
         //- Construct as named copy
         inline fluidLutEOS
