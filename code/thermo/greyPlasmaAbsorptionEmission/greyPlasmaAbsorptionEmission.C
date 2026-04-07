@@ -52,7 +52,7 @@ Foam::radiationModels::greyPlasmaAbsorptionEmission::greyPlasmaAbsorptionEmissio
     const fvMesh& mesh
 )
 :
-    absorptionEmissionModel(dict, mesh),
+    absorptionEmissionModel(mesh),
     coeffsDict_(dict.optionalSubDict("plasmaRadiationData")),
     aStartT_(readScalar(coeffsDict_.subDict("absorptionCoeffs").lookup("startT"))),
     aDeltaT_(readScalar(coeffsDict_.subDict("absorptionCoeffs").lookup("deltaT"))),
@@ -81,7 +81,7 @@ Foam::radiationModels::greyPlasmaAbsorptionEmission::aCont(const label bandI) co
             IOobject
             (
                 "aCont" + name(bandI),
-                mesh_.time().timeName(),
+                mesh_.time().name(),
                 mesh_,
                 IOobject::NO_READ,
                 IOobject::NO_WRITE
@@ -131,7 +131,7 @@ Foam::radiationModels::greyPlasmaAbsorptionEmission::eCont(const label bandI) co
             IOobject
             (
                 "eCont" + name(bandI),
-                mesh_.time().timeName(),
+                mesh_.time().name(),
                 mesh_,
                 IOobject::NO_READ,
                 IOobject::NO_WRITE
@@ -181,7 +181,7 @@ Foam::radiationModels::greyPlasmaAbsorptionEmission::ECont(const label bandI) co
           IOobject
           (
               "ECont" + name(bandI),
-              mesh_.time().timeName(),
+              mesh_.time().name(),
               mesh_,
               IOobject::NO_READ,
               IOobject::NO_WRITE
