@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
         //Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            if (pimple.firstIter() && !pimple.SIMPLErho())
+            if (pimple.firstPimpleIter())
             {
                 #include "rhoEqn.H"
             }
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
                 #include "pEqn.H"
             }
 
-            if (pimple.turbCorr())
+            if (pimple.finalPimpleIter())
             {
                 turbulence->correct();
                 thermophysicalTransport->correct();

@@ -1,7 +1,4 @@
-if (!pimple.SIMPLErho())
-{
-    rho = thermo.rho();
-}
+rho = thermo.rho();
 
 // Thermodynamic density needs to be updated by psi*d(p) after the
 // pressure solution
@@ -11,7 +8,7 @@ volScalarField rAU(1.0/UEqn.A());
 surfaceScalarField rhorAUf("rhorAUf", fvc::interpolate(rho*rAU));
 volVectorField HbyA(constrainHbyA(rAU*UEqn.H(), U, p));
 
-if (pimple.nCorrPISO() <= 1)
+if (pimple.nCorrPiso() <= 1)
 {
     tUEqn.clear();
 }
