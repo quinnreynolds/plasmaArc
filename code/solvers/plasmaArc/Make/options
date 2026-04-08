@@ -21,7 +21,7 @@ EXE_LIBS = \
     -lspecie \
     -lmomentumTransportModels \
     -lcompressibleMomentumTransportModels \
-    -lthermophysicalTransportModels \
+    -lcoupledThermophysicalTransportModels \
     -lsampling \
     -latmosphericModels \
     -lphysicalProperties

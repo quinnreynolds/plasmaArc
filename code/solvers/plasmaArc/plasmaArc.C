@@ -83,7 +83,6 @@ int main(int argc, char *argv[])
     #include "createTime.H"
     #include "createMesh.H"
     #include "createPimpleControl.H"
-    const bool LTS = false;
     const bool correctPhi = false;
     #include "initContinuityErrs.H"
     #include "createFields.H"
