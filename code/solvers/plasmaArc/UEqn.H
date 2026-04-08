@@ -1,12 +1,11 @@
 volVectorField USource(j ^ B);
 
-MRF.correctBoundaryVelocity(U);
-
 tmp<fvVectorMatrix> tUEqn
 (
     fvm::ddt(rho, U)
   + fvm::div(phi, U)
-  + turbulence->divDevRhoReff(U)
+  + MRF.DDt(rho, U)
+  + turbulence->divDevTau(U)
   - USource
   ==
     fvModels.source(rho, U)

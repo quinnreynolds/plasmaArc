@@ -9,24 +9,24 @@ if (calculateCompositionFieldsYN)
         {
             forAll(T,cellI)
             {
-                compFields[compI]->ref()[cellI] = scalarLookup
+                compFields[compI]->primitiveFieldRef()[cellI] = scalarLookup
                 (
-                    T.ref()[cellI], 
-                    compStartT[compI], 
-                    compDeltaT[compI], 
+                    T.primitiveField()[cellI],
+                    compStartT[compI],
+                    compDeltaT[compI],
                     compData[compI]
                 );
             }
 
-            forAll(T.boundaryField(),patchI) 
+            forAll(T.boundaryField(),patchI)
             {
                 forAll(T.boundaryField()[patchI],cellI)
                 {
                     compFields[compI]->boundaryFieldRef()[patchI][cellI] = scalarLookup
-                    ( 
+                    (
                         T.boundaryField()[patchI][cellI],
-                        compStartT[compI], 
-                        compDeltaT[compI], 
+                        compStartT[compI],
+                        compDeltaT[compI],
                         compData[compI]
                     );
                 }
@@ -41,24 +41,24 @@ if (calculateCompositionFieldsYN)
         {
             forAll(T,cellI)
             {
-                compFields[compI]->ref()[cellI] = scalarLookup
+                compFields[compI]->primitiveFieldRef()[cellI] = scalarLookup
                 (
-                    T.ref()[cellI], 
-                    compStartT[compI], 
-                    compDeltaT[compI], 
+                    T.primitiveField()[cellI],
+                    compStartT[compI],
+                    compDeltaT[compI],
                     compData[compI]
                 );
             }
 
-            forAll(T.boundaryField(),patchI) 
+            forAll(T.boundaryField(),patchI)
             {
                 forAll(T.boundaryField()[patchI],cellI)
                 {
                     compFields[compI]->boundaryFieldRef()[patchI][cellI] = scalarLookup
-                    ( 
+                    (
                         T.boundaryField()[patchI][cellI],
-                        compStartT[compI], 
-                        compDeltaT[compI], 
+                        compStartT[compI],
+                        compDeltaT[compI],
                         compData[compI]
                     );
                 }

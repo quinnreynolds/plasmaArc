@@ -13,39 +13,27 @@ IOdictionary electromagneticProperties
 //magnetic permeability - defaults to free space
 dimensionedScalar mu0
 (
-    dimensionedScalar::lookupOrDefault
-    (
-        "mu0",
-        electromagneticProperties,
-        dimensionSet(1, 1, -2, 0, 0, -2, 0),
-        scalar(1.25664e-06)
-    )
+    "mu0",
+    dimensionSet(1, 1, -2, 0, 0, -2, 0),
+    electromagneticProperties.lookupOrDefault<scalar>("mu0", 1.25664e-06)
 );
 
 // Electron energy transport constant - leave at default unless some weird
 // physics is happening
 dimensionedScalar constantET
 (
-    dimensionedScalar::lookupOrDefault
-    (
-        "constantET",
-        electromagneticProperties,
-        dimensionSet(1, 2, -3, -1, 0, -1, 0),
-        scalar(0.000215433)
-    )
+    "constantET",
+    dimensionSet(1, 2, -3, -1, 0, -1, 0),
+    electromagneticProperties.lookupOrDefault<scalar>("constantET", 0.000215433)
 );
 
-// MVP decay constant - used in 2D cartesian problems only, should be left at 
+// MVP decay constant - used in 2D cartesian problems only, should be left at
 // default 0 in all other cases
 dimensionedScalar constantMVP
 (
-    dimensionedScalar::lookupOrDefault
-    (
-        "constantMVP",
-        electromagneticProperties,
-        dimensionSet(0, -2, 0, 0, 0, 0, 0),
-        scalar(0.)
-    )
+    "constantMVP",
+    dimensionSet(0, -2, 0, 0, 0, 0, 0),
+    electromagneticProperties.lookupOrDefault<scalar>("constantMVP", scalar(0.))
 );
 
 //electric potential field
@@ -55,7 +43,7 @@ volScalarField ePot
     IOobject
     (
         "ePot",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -70,7 +58,7 @@ volVectorField A
     IOobject
     (
         "A",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -84,7 +72,7 @@ volScalarField ek
     IOobject
     (
         "ek",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -99,7 +87,7 @@ volVectorField B
     IOobject
     (
         "B",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
@@ -113,7 +101,7 @@ volVectorField j
     IOobject
     (
         "j",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
@@ -127,7 +115,7 @@ volVectorField ddtA
     IOobject
     (
         "ddtA",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE

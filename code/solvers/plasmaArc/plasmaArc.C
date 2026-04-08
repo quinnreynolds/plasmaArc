@@ -38,6 +38,9 @@ Description
 
 \*---------------------------------------------------------------------------*/
 
+// Select PIMPLE control for postProcess.H -> createControl.H dispatch
+#define PIMPLE_CONTROL
+
 #include "Time.H"
 #include "fvMesh.H"
 #include "fvc.H"
@@ -45,11 +48,14 @@ Description
 #include "volFields.H"
 #include "surfaceFields.H"
 #include "argList.H"
+#include "timeSelector.H"
 #include "fluidThermo.H"
-#include "compressibleMomentumTransportModel.H"
-#include "fluidThermophysicalTransportModel.H"
+#include "compressibleMomentumTransportModels.H"
+#include "fluidThermoThermophysicalTransportModel.H"
 #include "bound.H"
 #include "pimpleControl.H"
+#include "constrainHbyA.H"
+#include "constrainPressure.H"
 #include "CorrectPhi.H"
 #include "fvModels.H"
 #include "fvConstraints.H"
@@ -58,17 +64,27 @@ Description
 #include "directionMixedFvPatchFields.H"
 #include "zeroGradientFvPatchField.H"
 
+// Individual fvm operator headers (replaces fvCFD.H)
+#include "fvmDdt.H"
+#include "fvmDiv.H"
+#include "fvmLaplacian.H"
+#include "fvmSup.H"
+
+using namespace Foam;
+
+#include "scalarLookup.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
 {
-    using namespace Foam;
-    #include "scalarLookup.H"
     #include "postProcess.H"
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
+    #include "createPimpleControl.H"
     const bool LTS = false;
+    const bool correctPhi = false;
     #include "initContinuityErrs.H"
     #include "createFields.H"
     #include "emInclude/createFields.H"
@@ -83,6 +99,7 @@ int main(int argc, char *argv[])
 
     turbulence->validate();
 
+    #include "createTimeControls.H"
     #include "compressibleCourantNo.H"
     #include "setInitialDeltaT.H"
 
@@ -108,6 +125,7 @@ int main(int argc, char *argv[])
             );
         }
 
+        #include "readTimeControls.H"
         #include "compressibleCourantNo.H"
         #include "setDeltaT.H"
 
@@ -148,7 +166,7 @@ int main(int argc, char *argv[])
         #include "calculateMachNo.H"
 
         #include "calculateCompositions.H"
-        
+
         runTime.write();
 
         Info<< "Voltage = " << gMin(ePot) << "/" << gMax(ePot) << " V, "
@@ -156,7 +174,9 @@ int main(int argc, char *argv[])
             << "|U| = " << gMax(magU) << " m/s, "
             << "Ma = " << gMax(MachNo) << nl;
 
-        runTime.printExecutionTime(Info);
+        Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
+            << "  ClockTime = " << runTime.elapsedClockTime() << " s"
+            << nl << endl;
     }
 
     Info<< "End\n" << endl;

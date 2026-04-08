@@ -20,7 +20,7 @@ surfaceScalarField phiHbyA
 (
     "phiHbyA",
     fvc::interpolate(rho)*fvc::flux(HbyA)
-  + MRF.zeroFilter(rhorAUf*fvc::ddtCorr(rho, U, phi, rhoUf))
+  + rhorAUf*fvc::ddtCorr(rho, U, phi, rhoUf)
 );
 
 fvc::makeRelative(phiHbyA, rho, U);
@@ -44,7 +44,7 @@ if (pimple.transonic())
         fvc::ddt(rho) + psi*correction(fvm::ddt(p))
       + fvc::div(phiHbyA) + fvm::div(phid, p)
      ==
-        fvModels.source(psi, p, rho.name())
+        fvModels.source(psi, p)
     );
 
     while (pimple.correctNonOrthogonal())
@@ -54,7 +54,7 @@ if (pimple.transonic())
         // Relax the pressure equation to ensure diagonal-dominance
         pEqn.relax();
 
-        pEqn.solve(mesh.solver(p.select(pimple.finalInnerIter())));
+        pEqn.solve();
 
         if (pimple.finalNonOrthogonalIter())
         {
@@ -69,14 +69,14 @@ else
         fvc::ddt(rho) + psi*correction(fvm::ddt(p))
       + fvc::div(phiHbyA)
      ==
-        fvModels.source(psi, p, rho.name())
+        fvModels.source(psi, p)
     );
 
     while (pimple.correctNonOrthogonal())
     {
         fvScalarMatrix pEqn(pDDtEqn - fvm::laplacian(rhorAUf, p));
 
-        pEqn.solve(mesh.solver(p.select(pimple.finalInnerIter())));
+        pEqn.solve();
 
         if (pimple.finalNonOrthogonalIter())
         {

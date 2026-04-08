@@ -11,7 +11,7 @@ List< autoPtr<volScalarField> > compFields;
 
 if (calculateCompositionFieldsYN)
 {
-    plasmaSpecies = thermoPropertiesDict.subDict("compositions").lookup("species");
+    thermoPropertiesDict.subDict("compositions").lookup("species") >> plasmaSpecies;
     compStartT.resize(plasmaSpecies.size());
     compDeltaT.resize(plasmaSpecies.size());
     compData.resize(plasmaSpecies.size());
@@ -34,7 +34,7 @@ if (calculateCompositionFieldsYN)
                 IOobject
                 (
                     "X_species_" + specI,
-                    runTime.timeName(),
+                    runTime.name(),
                     mesh,
                     IOobject::NO_READ,
                     IOobject::AUTO_WRITE

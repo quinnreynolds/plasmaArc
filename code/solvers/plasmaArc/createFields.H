@@ -58,9 +58,9 @@ autoPtr<compressible::momentumTransportModel> turbulence
 );
 
 Info<< "Creating thermophysical transport model\n" << endl;
-autoPtr<fluidThermophysicalTransportModel> thermophysicalTransport
+autoPtr<fluidThermoThermophysicalTransportModel> thermophysicalTransport
 (
-    fluidThermophysicalTransportModel::New(turbulence(), thermo)
+    fluidThermoThermophysicalTransportModel::New(turbulence(), thermo)
 );
 
 Info<< "Creating field MachNo\n" << endl;
@@ -212,8 +212,18 @@ dimensionedScalar initialMass = fvc::domainIntegrate(rho);
 
 #include "createMRF.H"
 
-const dimensionedScalar rhoMax("rhoMax", dimDensity, GREAT, pimple.dict());
-const dimensionedScalar rhoMin("rhoMin", dimDensity, Zero, pimple.dict());
+const dimensionedScalar rhoMax
+(
+    "rhoMax",
+    dimDensity,
+    pimple.dict().lookupOrDefault<scalar>("rhoMax", great)
+);
+const dimensionedScalar rhoMin
+(
+    "rhoMin",
+    dimDensity,
+    pimple.dict().lookupOrDefault<scalar>("rhoMin", scalar(0))
+);
 
 #include "createFvModels.H"
 #include "createFvConstraints.H"
