@@ -85,15 +85,15 @@ fixedCurrentDensityFvPatchScalarField
 {}
 
 
-Foam::fixedCurrentDensityFvPatchScalarField::
-fixedCurrentDensityFvPatchScalarField
-(
-    const fixedCurrentDensityFvPatchScalarField& ptf
-)
-:
-    mixedFvPatchScalarField(ptf),
-    currentDensity_(ptf.currentDensity_)
-{}
+// Foam::fixedCurrentDensityFvPatchScalarField::
+// fixedCurrentDensityFvPatchScalarField
+// (
+//     const fixedCurrentDensityFvPatchScalarField& ptf
+// )
+// :
+//     mixedFvPatchScalarField(ptf),
+//     currentDensity_(ptf.currentDensity_)
+// {}
 
 
 Foam::fixedCurrentDensityFvPatchScalarField::

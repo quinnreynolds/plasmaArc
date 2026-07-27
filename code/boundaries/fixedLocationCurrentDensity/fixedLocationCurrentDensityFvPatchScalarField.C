@@ -100,19 +100,6 @@ fixedLocationCurrentDensityFvPatchScalarField
 Foam::fixedLocationCurrentDensityFvPatchScalarField::
 fixedLocationCurrentDensityFvPatchScalarField
 (
-    const fixedLocationCurrentDensityFvPatchScalarField& ptf
-)
-:
-    mixedFvPatchScalarField(ptf),
-    current_(ptf.current_.clone()),
-    currentDensity_(ptf.currentDensity_.clone()),
-    referencePosition_(ptf.referencePosition_)
-{}
-
-
-Foam::fixedLocationCurrentDensityFvPatchScalarField::
-fixedLocationCurrentDensityFvPatchScalarField
-(
     const fixedLocationCurrentDensityFvPatchScalarField& ptf,
     const DimensionedField<scalar, volMesh>& iF
 )

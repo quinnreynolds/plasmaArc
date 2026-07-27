@@ -81,18 +81,6 @@ limitedTemperatureFvPatchScalarField
 Foam::limitedTemperatureFvPatchScalarField::
 limitedTemperatureFvPatchScalarField
 (
-    const limitedTemperatureFvPatchScalarField& ptf
-)
-:
-    fixedValueFvPatchScalarField(ptf),
-    Tbound_(ptf.Tbound_),
-    upperBoundYN_(ptf.upperBoundYN_)
-{}
-
-
-Foam::limitedTemperatureFvPatchScalarField::
-limitedTemperatureFvPatchScalarField
-(
     const limitedTemperatureFvPatchScalarField& ptf,
     const DimensionedField<scalar, volMesh>& iF
 )
