@@ -48,7 +48,7 @@ if (runTime.timeIndex() == 1 || runTime.timeIndex() % emSolverFreq == 0)
         Vector<scalar> residualA(AEqn.solve().initialResidual());
 
         // Magnetic field
-        B = fvc::curl(A);
+        B = fvc::curl(A) + B0;
 
         Vector<scalar> bMag(gMax(B) - gMin(B));
         scalar bMagNorm = max(max(bMag.x(), bMag.y()), bMag.z());

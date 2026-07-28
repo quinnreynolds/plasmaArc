@@ -107,6 +107,22 @@ volVectorField B
     fvc::curl(A)
 );
 
+// Background magnetic field, defaults to 0 but can be modified using runtime functions
+// such as exprField.
+volVectorField B0
+(
+    IOobject
+    (
+        "B0",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedVector("B0", dimensionSet(1,0,-2,0,0,-1,0), vector(0.,0.,0.))
+);
+
 Info<< "Setting up field j" << nl;
 volVectorField j
 (
