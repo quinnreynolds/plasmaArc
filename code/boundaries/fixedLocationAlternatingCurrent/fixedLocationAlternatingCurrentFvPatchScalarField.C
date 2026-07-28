@@ -96,6 +96,24 @@ Foam::fixedLocationAlternatingCurrentFvPatchScalarField::
 fixedLocationAlternatingCurrentFvPatchScalarField
 (
     const fixedLocationAlternatingCurrentFvPatchScalarField& ptf,
+    const fvPatch& p,
+    const DimensionedField<scalar, volMesh>& iF,
+    const fvPatchFieldMapper& mapper
+)
+:
+    mixedFvPatchScalarField(ptf, iF),
+    current_(ptf.current_),
+    currentDensity_(ptf.currentDensity_),
+    frequency_(ptf.frequency_),
+    theta_(ptf.theta_),
+    referencePosition_(ptf.referencePosition_)
+{}
+
+
+Foam::fixedLocationAlternatingCurrentFvPatchScalarField::
+fixedLocationAlternatingCurrentFvPatchScalarField
+(
+    const fixedLocationAlternatingCurrentFvPatchScalarField& ptf,
     const DimensionedField<scalar, volMesh>& iF
 )
 :
