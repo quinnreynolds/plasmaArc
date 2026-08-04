@@ -30,8 +30,6 @@ License
 #include "surfaceFields.H"
 #include "SortableList.H"
 
-#include <cmath>
-
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
 Foam::scalar Foam::fixedLocationCurrentDensityFvPatchScalarField::t() const
@@ -76,9 +74,9 @@ fixedLocationCurrentDensityFvPatchScalarField
     refGrad() = Zero;
     valueFraction() = Zero;
 
-    fvPatchScalarField::operator = 
-    ( 
-        scalarField("value", dict, p.size()) 
+    fvPatchScalarField::operator =
+    (
+        scalarField("value", dict, p.size())
     );
 }
 
@@ -136,23 +134,6 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::rmap
 
 void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
 {
-    // TEMPORARY DIAGNOSTIC - investigating an AMR+load-balancing SIGFPE.
-    // Checks whether every processor calls this function (and its
-    // collective gatherList/broadcastList section) the same number of
-    // times, especially in the timestep right after a redistribution
-    // event, and whether the gathered/selected data looks sane. Safe to
-    // remove once the issue is root-caused.
-    static label callCount_diag = 0;
-    ++callCount_diag;
-    Pout<< "[fixedLocationCurrentDensity::updateCoeffs] ENTRY "
-        << "proc=" << Pstream::myProcNo()
-        << " patch=" << patch().name()
-        << " call=" << callCount_diag
-        << " patchSize=" << patch().size()
-        << " updatedAtEntry=" << updated()
-        << " time=" << db().time().timeName()
-        << endl;
-
     if (updated())
     {
         return;
@@ -165,8 +146,8 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
     label nProcs = Pstream::nProcs();
     label myProcNo = Pstream::myProcNo();
 
-    const scalarField& ekPatch = patch().lookupPatchField<volScalarField, scalar>("ek"); 
-    const vectorField& posPatch = patch().Cf(); 
+    const scalarField& ekPatch = patch().lookupPatchField<volScalarField, scalar>("ek");
+    const vectorField& posPatch = patch().Cf();
     const scalarField distPatch(mag(posPatch - referencePosition_));
 
     scalarListList procDist(nProcs), procArea(nProcs);
@@ -182,7 +163,7 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         procLocalIndex[myProcNo][faceI] = faceI;
         procProc[myProcNo][faceI] = myProcNo;
     }
-    
+
     #if (OPENFOAM >= 2312)
         Pstream::gatherList(procDist);
         Pstream::broadcastList(procDist);
@@ -192,7 +173,7 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         Pstream::broadcastList(procLocalIndex);
         Pstream::gatherList(procProc);
         Pstream::broadcastList(procProc);
-    #else 
+    #else
         Pstream::gatherList(procDist);
         Pstream::scatterList(procDist);
         Pstream::gatherList(procArea);
@@ -202,25 +183,6 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         Pstream::gatherList(procProc);
         Pstream::scatterList(procProc);
     #endif
-
-    // TEMPORARY DIAGNOSTIC - confirms every processor reached this point
-    // (i.e. all four gatherList/broadcastList round-trips completed
-    // without hanging) and reports the total gathered face count, which
-    // should be identical - the sum of every processor's local patch
-    // size - on every rank if the collective calls stayed in sync.
-    {
-        label totalGathered = 0;
-        forAll(procDist, procI)
-        {
-            totalGathered += procDist[procI].size();
-        }
-        Pout<< "[fixedLocationCurrentDensity::updateCoeffs] "
-            << "POST-GATHER proc=" << Pstream::myProcNo()
-            << " call=" << callCount_diag
-            << " nProcs=" << nProcs
-            << " totalGatheredFaces=" << totalGathered
-            << endl;
-    }
 
     DynamicList<scalar> faceDist, faceArea;
     DynamicList<label> faceLocalIndex, faceProc;
@@ -236,8 +198,8 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
     scalar totalArea = mag(current) / currentDensity;
 
     scalar runningArea = 0;
-    
-    scalarField elPotenGradient(patch().size(), 0); 
+
+    scalarField elPotenGradient(patch().size(), 0);
 
     forAll(sortedDist, n)
     {
@@ -246,58 +208,12 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         if (faceProc[ni] == myProcNo)
         {
             scalar faceI = faceLocalIndex[ni];
-
-            // TEMPORARY DIAGNOSTIC - guard the two ways this indexing/
-            // division could go wrong: faceI landing outside ekPatch's
-            // current size (a stale/mismatched "ek" boundary field after
-            // redistribution), or dividing by a near-zero conductivity.
-            if (faceI < 0 || faceI >= ekPatch.size())
-            {
-                Pout<< "[fixedLocationCurrentDensity::updateCoeffs] "
-                    << "OUT-OF-BOUNDS proc=" << Pstream::myProcNo()
-                    << " call=" << callCount_diag
-                    << " faceI=" << faceI
-                    << " ekPatchSize=" << ekPatch.size()
-                    << " patchSize=" << patch().size()
-                    << endl;
-            }
-            else if (mag(ekPatch[faceI]) < SMALL)
-            {
-                Pout<< "[fixedLocationCurrentDensity::updateCoeffs] "
-                    << "NEAR-ZERO-EK proc=" << Pstream::myProcNo()
-                    << " call=" << callCount_diag
-                    << " faceI=" << faceI
-                    << " ekPatchValue=" << ekPatch[faceI]
-                    << endl;
-            }
-            else
-            {
-                elPotenGradient[faceI] = currentSign * currentDensity / ekPatch[faceI];
-            }
+            elPotenGradient[faceI] = currentSign * currentDensity / ekPatch[faceI];
         }
         if (runningArea > totalArea)
         {
             break;
         }
-    }
-
-    // TEMPORARY DIAGNOSTIC - confirm the final refGrad() payload is finite
-    // before it goes into the ePot matrix assembly.
-    {
-        bool allFinite = true;
-        forAll(elPotenGradient, i)
-        {
-            if (!std::isfinite(elPotenGradient[i]))
-            {
-                allFinite = false;
-                break;
-            }
-        }
-        Pout<< "[fixedLocationCurrentDensity::updateCoeffs] EXIT "
-            << "proc=" << Pstream::myProcNo()
-            << " call=" << callCount_diag
-            << " elPotenGradientFinite=" << allFinite
-            << endl;
     }
 
     this->refGrad() = elPotenGradient;
