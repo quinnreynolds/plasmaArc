@@ -50,12 +50,8 @@ Description
 #include "localEulerDdtScheme.H"
 #include "fvcSmooth.H"
 #include "directionMixedFvPatchFields.H"
-#include "mixedFvPatchFields.H"
 #include "zeroGradientFvPatchField.H"
 #include "scalarLookup.H"
-#include "processorPolyPatch.H"
-
-#include <cmath>
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
