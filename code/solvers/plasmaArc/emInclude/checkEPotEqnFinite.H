@@ -118,8 +118,21 @@
                     if (isInternal)
                     {
                         const label nei = mesh.faceNeighbour()[facei];
+
+                        // Angle between the face normal and the owner-to-
+                        // neighbour vector: nonOrthDeltaCoeffs() ~ 1/cosAngle,
+                        // so this blows up as cosAngle -> 0 (face normal
+                        // nearly perpendicular to the cell-to-cell line)
+                        // even when magSf/deltaCoeffs/volumes all look fine.
+                        const vector d(mesh.C()[nei] - mesh.C()[own]);
+                        const vector n(mesh.faceAreas()[facei]/mag(mesh.faceAreas()[facei]));
+                        const scalar cosAngle((d & n)/(mag(d) + SMALL));
+
                         Pout<< " neighbour=" << nei
                             << " deltaCoeffs=" << mesh.deltaCoeffs()[facei]
+                            << " nonOrthDeltaCoeffs=" << mesh.nonOrthDeltaCoeffs()[facei]
+                            << " nonOrthCorrVec=" << mesh.nonOrthCorrectionVectors()[facei]
+                            << " cosAngle=" << cosAngle
                             << " weights=" << mesh.weights()[facei]
                             << " V_owner=" << mesh.V()[own]
                             << " V_neighbour=" << mesh.V()[nei]
