@@ -71,6 +71,15 @@ fixedLocationCurrentDensityFvPatchScalarField
     currentDensity_(Function1<scalar>::New("currentDensity", dict)),
     referencePosition_(vector(dict.lookup("referencePosition")))
 {
+    // refValue() is never actually used in the field's own evaluation,
+    // since valueFraction() is always 0 below (this is a pure current-
+    // density/Neumann condition) - but mixedFvPatchField's
+    // gradientBoundaryCoeffs()/valueBoundaryCoeffs() compute
+    // lerp(refGrad_, deltaCoeffs*refValue_, valueFraction_), and
+    // 0*NaN == NaN in IEEE-754, so a zero weight does not protect
+    // against a genuinely uninitialised refValue_. Must still be
+    // explicitly initialised, matching the no-dict constructor above.
+    refValue() = Zero;
     refGrad() = Zero;
     valueFraction() = Zero;
 
