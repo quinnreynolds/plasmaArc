@@ -2,28 +2,43 @@
 // Checks ePotEqn's diag()/upper()/lower()/source()/internalCoeffs()/
 // boundaryCoeffs() for non-finite (NaN/Inf) values. Included twice -
 // once right after construction, once right after relax() - with
-// checkEPotEqnStage set beforehand to say which. Aborts with the exact
-// location pinpointed on the first bad value found. Also warns (without
-// aborting) on a near-zero diagonal entry, since that alone is enough to
-// destabilise PCG even without any value actually being non-finite.
+// checkEPotEqnStage set beforehand to say which. Collects every anomaly
+// found (rather than aborting on the first) so we can tell whether this
+// is a single isolated defect or something more widespread - printing
+// detail is capped per component at checkMaxPrint, but the true total
+// count is always reported. Also warns (without counting as an error)
+// on a near-zero diagonal entry, since that alone is enough to
+// destabilise PCG even without any value actually being non-finite. For
+// source() specifically, dumps full forensic detail (see
+// dumpEPotCellForensics.H) for the first few bad cells. Aborts with a
+// summary once the full scan across all six components is complete.
 // Safe to remove once the AMR+load-balancing crash is root-caused.
 {
+    const label checkMaxPrint = 20;
+    const label checkForensicDumpMax = 3;
+    label checkTotalBad = 0;
+    label checkForensicDumpCount = 0;
+
     if (ePotEqn.hasDiag())
     {
         const scalarField& diag = ePotEqn.diag();
+        label nBad = 0;
         forAll(diag, celli)
         {
             if (!std::isfinite(diag[celli]))
             {
-                FatalErrorInFunction
-                    << "Non-finite ePotEqn.diag() [" << checkEPotEqnStage
-                    << "] at cell " << celli
-                    << ", value=" << diag[celli]
-                    << ", nEM=" << nEM
-                    << ", time=" << runTime.timeName()
-                    << abort(FatalError);
+                ++nBad;
+                if (nBad <= checkMaxPrint)
+                {
+                    Pout<< "[checkEPotEqnFinite] Non-finite diag() ["
+                        << checkEPotEqnStage << "] at cell " << celli
+                        << ", value=" << diag[celli]
+                        << ", nEM=" << nEM
+                        << ", time=" << runTime.timeName()
+                        << endl;
+                }
             }
-            if (mag(diag[celli]) < SMALL)
+            else if (mag(diag[celli]) < SMALL)
             {
                 Pout<< "[checkEPotEqnFinite] WARNING near-zero diag ["
                     << checkEPotEqnStage << "] "
@@ -35,195 +50,170 @@
                     << endl;
             }
         }
+        if (nBad > checkMaxPrint)
+        {
+            Pout<< "[checkEPotEqnFinite] ... and " << (nBad - checkMaxPrint)
+                << " more non-finite diag() values" << endl;
+        }
+        checkTotalBad += nBad;
     }
 
     if (ePotEqn.hasUpper())
     {
         const scalarField& upper = ePotEqn.upper();
+        label nBad = 0;
         forAll(upper, i)
         {
             if (!std::isfinite(upper[i]))
             {
-                FatalErrorInFunction
-                    << "Non-finite ePotEqn.upper() [" << checkEPotEqnStage
-                    << "] at index " << i
-                    << ", value=" << upper[i]
-                    << ", nEM=" << nEM
-                    << ", time=" << runTime.timeName()
-                    << abort(FatalError);
+                ++nBad;
+                if (nBad <= checkMaxPrint)
+                {
+                    Pout<< "[checkEPotEqnFinite] Non-finite upper() ["
+                        << checkEPotEqnStage << "] at index " << i
+                        << ", value=" << upper[i]
+                        << ", nEM=" << nEM
+                        << ", time=" << runTime.timeName()
+                        << endl;
+                }
             }
         }
+        if (nBad > checkMaxPrint)
+        {
+            Pout<< "[checkEPotEqnFinite] ... and " << (nBad - checkMaxPrint)
+                << " more non-finite upper() values" << endl;
+        }
+        checkTotalBad += nBad;
     }
 
     if (ePotEqn.hasLower())
     {
         const scalarField& lower = ePotEqn.lower();
+        label nBad = 0;
         forAll(lower, i)
         {
             if (!std::isfinite(lower[i]))
             {
-                FatalErrorInFunction
-                    << "Non-finite ePotEqn.lower() [" << checkEPotEqnStage
-                    << "] at index " << i
-                    << ", value=" << lower[i]
-                    << ", nEM=" << nEM
-                    << ", time=" << runTime.timeName()
-                    << abort(FatalError);
+                ++nBad;
+                if (nBad <= checkMaxPrint)
+                {
+                    Pout<< "[checkEPotEqnFinite] Non-finite lower() ["
+                        << checkEPotEqnStage << "] at index " << i
+                        << ", value=" << lower[i]
+                        << ", nEM=" << nEM
+                        << ", time=" << runTime.timeName()
+                        << endl;
+                }
             }
         }
+        if (nBad > checkMaxPrint)
+        {
+            Pout<< "[checkEPotEqnFinite] ... and " << (nBad - checkMaxPrint)
+                << " more non-finite lower() values" << endl;
+        }
+        checkTotalBad += nBad;
     }
 
     {
         const scalarField& src = ePotEqn.source();
+        label nBad = 0;
         forAll(src, celli)
         {
             if (!std::isfinite(src[celli]))
             {
-                // TEMPORARY DIAGNOSTIC - forensic dump of this cell and
-                // its faces before aborting, since the four scalar/vector
-                // inputs (ek, ePot, UcrossB, dotTerm) were already
-                // confirmed finite here by checkEPotInputsFinite.H: if
-                // the assembled source() is bad anyway, the problem is in
-                // the discretisation geometry (volume, face areas,
-                // owner/neighbour addressing, interpolation weights),
-                // none of which are registered fields the earlier
-                // (now-removed) blastAMR-side diagnostics could see.
-                Pout<< "[checkEPotEqnFinite] FORENSIC DUMP cell=" << celli
-                    << " proc=" << Pstream::myProcNo()
-                    << " nEM=" << nEM
-                    << " time=" << runTime.timeName()
-                    << nl
-                    << "  V=" << mesh.V()[celli]
-                    << " C=" << mesh.C()[celli]
-                    << " ek=" << ek[celli]
-                    << " ePot=" << ePot[celli]
-                    << " UcrossB=" << UcrossB[celli]
-                    << " dotTerm=" << dotTerm[celli]
-                    << endl;
-
-                const cell& c = mesh.cells()[celli];
-                const label nInternalFaces = mesh.nInternalFaces();
-                forAll(c, fi)
+                ++nBad;
+                if (nBad <= checkMaxPrint)
                 {
-                    const label facei = c[fi];
-                    const bool isInternal = facei < nInternalFaces;
-                    const label own = mesh.faceOwner()[facei];
-
-                    Pout<< "  face=" << facei
-                        << " internal=" << isInternal
-                        << " owner=" << own
-                        << " magSf=" << mag(mesh.faceAreas()[facei])
-                        << " Cf=" << mesh.faceCentres()[facei];
-
-                    if (isInternal)
-                    {
-                        const label nei = mesh.faceNeighbour()[facei];
-
-                        // Angle between the face normal and the owner-to-
-                        // neighbour vector: nonOrthDeltaCoeffs() ~ 1/cosAngle,
-                        // so this blows up as cosAngle -> 0 (face normal
-                        // nearly perpendicular to the cell-to-cell line)
-                        // even when magSf/deltaCoeffs/volumes all look fine.
-                        const vector d(mesh.C()[nei] - mesh.C()[own]);
-                        const vector n(mesh.faceAreas()[facei]/mag(mesh.faceAreas()[facei]));
-                        const scalar cosAngle((d & n)/(mag(d) + SMALL));
-
-                        Pout<< " neighbour=" << nei
-                            << " deltaCoeffs=" << mesh.deltaCoeffs()[facei]
-                            << " nonOrthDeltaCoeffs=" << mesh.nonOrthDeltaCoeffs()[facei]
-                            << " nonOrthCorrVec=" << mesh.nonOrthCorrectionVectors()[facei]
-                            << " cosAngle=" << cosAngle
-                            << " weights=" << mesh.weights()[facei]
-                            << " V_owner=" << mesh.V()[own]
-                            << " V_neighbour=" << mesh.V()[nei]
-                            << " ek_owner=" << ek[own]
-                            << " ek_neighbour=" << ek[nei]
-                            << endl;
-                    }
-                    else
-                    {
-                        const label patchi =
-                            mesh.boundaryMesh().whichPatch(facei);
-                        const label patchFacei =
-                            facei - mesh.boundary()[patchi].start();
-                        const polyPatch& pp = mesh.boundaryMesh()[patchi];
-
-                        Pout<< " patch=" << mesh.boundary()[patchi].name()
-                            << " patchType=" << pp.type()
-                            << " patchFacei=" << patchFacei
-                            << " ek_boundary="
-                            << ek.boundaryField()[patchi][patchFacei]
-                            // deltaCoeffs/weights/non-orthogonal correction
-                            // are also defined on boundary (incl. processor)
-                            // faces - fvm::laplacian uses them there too,
-                            // and they were missing from the first version
-                            // of this dump.
-                            << " deltaCoeffs="
-                            << mesh.deltaCoeffs().boundaryField()[patchi][patchFacei]
-                            << " nonOrthDeltaCoeffs="
-                            << mesh.nonOrthDeltaCoeffs().boundaryField()[patchi][patchFacei]
-                            << " nonOrthCorrVec="
-                            << mesh.nonOrthCorrectionVectors().boundaryField()[patchi][patchFacei]
-                            << " weights="
-                            << mesh.weights().boundaryField()[patchi][patchFacei];
-
-                        if (isA<processorPolyPatch>(pp))
-                        {
-                            const auto& procPatch =
-                                refCast<const processorPolyPatch>(pp);
-                            Pout<< " myProcNo=" << procPatch.myProcNo()
-                                << " neighbProcNo=" << procPatch.neighbProcNo();
-                        }
-
-                        Pout<< endl;
-                    }
+                    Pout<< "[checkEPotEqnFinite] Non-finite source() ["
+                        << checkEPotEqnStage << "] at cell " << celli
+                        << ", value=" << src[celli]
+                        << ", nEM=" << nEM
+                        << ", time=" << runTime.timeName()
+                        << endl;
                 }
-
-                FatalErrorInFunction
-                    << "Non-finite ePotEqn.source() [" << checkEPotEqnStage
-                    << "] at cell " << celli
-                    << ", value=" << src[celli]
-                    << ", nEM=" << nEM
-                    << ", time=" << runTime.timeName()
-                    << abort(FatalError);
+                if (checkForensicDumpCount < checkForensicDumpMax)
+                {
+                    ++checkForensicDumpCount;
+                    #include "dumpEPotCellForensics.H"
+                }
             }
         }
+        if (nBad > checkMaxPrint)
+        {
+            Pout<< "[checkEPotEqnFinite] ... and " << (nBad - checkMaxPrint)
+                << " more non-finite source() values" << endl;
+        }
+        checkTotalBad += nBad;
     }
 
     forAll(ePotEqn.internalCoeffs(), patchi)
     {
         const scalarField& intCoeffs = ePotEqn.internalCoeffs()[patchi];
+        label nBadInt = 0;
         forAll(intCoeffs, facei)
         {
             if (!std::isfinite(intCoeffs[facei]))
             {
-                FatalErrorInFunction
-                    << "Non-finite ePotEqn.internalCoeffs() ["
-                    << checkEPotEqnStage << "] patch "
-                    << mesh.boundary()[patchi].name()
-                    << " face " << facei
-                    << ", value=" << intCoeffs[facei]
-                    << ", nEM=" << nEM
-                    << ", time=" << runTime.timeName()
-                    << abort(FatalError);
+                ++nBadInt;
+                if (nBadInt <= checkMaxPrint)
+                {
+                    Pout<< "[checkEPotEqnFinite] Non-finite internalCoeffs() ["
+                        << checkEPotEqnStage << "] patch "
+                        << mesh.boundary()[patchi].name()
+                        << " face " << facei
+                        << ", value=" << intCoeffs[facei]
+                        << ", nEM=" << nEM
+                        << ", time=" << runTime.timeName()
+                        << endl;
+                }
             }
         }
+        if (nBadInt > checkMaxPrint)
+        {
+            Pout<< "[checkEPotEqnFinite] ... and " << (nBadInt - checkMaxPrint)
+                << " more non-finite internalCoeffs() values on patch "
+                << mesh.boundary()[patchi].name() << endl;
+        }
+        checkTotalBad += nBadInt;
 
         const scalarField& bCoeffs = ePotEqn.boundaryCoeffs()[patchi];
+        label nBadB = 0;
         forAll(bCoeffs, facei)
         {
             if (!std::isfinite(bCoeffs[facei]))
             {
-                FatalErrorInFunction
-                    << "Non-finite ePotEqn.boundaryCoeffs() ["
-                    << checkEPotEqnStage << "] patch "
-                    << mesh.boundary()[patchi].name()
-                    << " face " << facei
-                    << ", value=" << bCoeffs[facei]
-                    << ", nEM=" << nEM
-                    << ", time=" << runTime.timeName()
-                    << abort(FatalError);
+                ++nBadB;
+                if (nBadB <= checkMaxPrint)
+                {
+                    Pout<< "[checkEPotEqnFinite] Non-finite boundaryCoeffs() ["
+                        << checkEPotEqnStage << "] patch "
+                        << mesh.boundary()[patchi].name()
+                        << " face " << facei
+                        << ", value=" << bCoeffs[facei]
+                        << ", nEM=" << nEM
+                        << ", time=" << runTime.timeName()
+                        << endl;
+                }
             }
         }
+        if (nBadB > checkMaxPrint)
+        {
+            Pout<< "[checkEPotEqnFinite] ... and " << (nBadB - checkMaxPrint)
+                << " more non-finite boundaryCoeffs() values on patch "
+                << mesh.boundary()[patchi].name() << endl;
+        }
+        checkTotalBad += nBadB;
+    }
+
+    if (checkTotalBad > 0)
+    {
+        FatalErrorInFunction
+            << "Found " << checkTotalBad
+            << " non-finite ePotEqn coefficient(s) ["
+            << checkEPotEqnStage << "]"
+            << " (proc=" << Pstream::myProcNo() << ")"
+            << ", nEM=" << nEM
+            << ", time=" << runTime.timeName()
+            << abort(FatalError);
     }
 }
