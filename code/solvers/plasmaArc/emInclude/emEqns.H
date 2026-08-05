@@ -16,12 +16,21 @@ if (runTime.timeIndex() == 1 || runTime.timeIndex() % emSolverFreq == 0)
     for (int nEM = 0; nEM < nMaxEMLoops; nEM++) {
         ek.correctBoundaryConditions();
 
+        #include "checkEPotInputsFinite.H"
+
         // Set up solution matrix for ePot scalar field
         fvScalarMatrix ePotEqn
         (
             fvm::laplacian(ek, ePot) - fvc::div(ek * UcrossB) + dotTerm
         );
+
+        word checkEPotEqnStage("post-construction");
+        #include "checkEPotEqnFinite.H"
+
         ePotEqn.relax();
+
+        checkEPotEqnStage = "pre-solve";
+        #include "checkEPotEqnFinite.H"
 
         // Matrix solve and convergence calc
         scalar residualEPot = ePotEqn.solve().initialResidual();

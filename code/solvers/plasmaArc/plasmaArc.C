@@ -53,6 +53,8 @@ Description
 #include "zeroGradientFvPatchField.H"
 #include "scalarLookup.H"
 
+#include <cmath>
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
