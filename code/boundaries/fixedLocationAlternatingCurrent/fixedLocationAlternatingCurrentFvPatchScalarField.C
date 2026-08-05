@@ -75,12 +75,23 @@ fixedLocationAlternatingCurrentFvPatchScalarField
     theta_(readScalar(dict.lookup("theta"))),
     referencePosition_(vector(dict.lookup("referencePosition")))
 {
+    // refValue() defaults to whatever mixedFvPatchScalarField(p, iF)'s
+    // base constructor allocated - genuinely uninitialised memory, not
+    // zero. Must be explicitly set before use below, otherwise reading
+    // from it in the dict.found("value")==false branch reads garbage,
+    // and gradientBoundaryCoeffs()/valueBoundaryCoeffs() computing
+    // refGrad_ + valueFraction_*(deltaCoeffs*refValue_ - refGrad_) will
+    // propagate a NaN refValue_ even with valueFraction_==0, since
+    // 0*NaN == NaN in IEEE-754.
+    this->refValue() = Zero;
+
     if (dict.found("value"))
     {
         fvPatchScalarField::operator=
         (
             scalarField("value", dict, p.size())
         );
+        this->refValue() = *this;
     }
     else
     {
