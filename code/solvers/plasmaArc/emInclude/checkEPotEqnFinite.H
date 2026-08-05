@@ -79,6 +79,70 @@
         {
             if (!std::isfinite(src[celli]))
             {
+                // TEMPORARY DIAGNOSTIC - forensic dump of this cell and
+                // its faces before aborting, since the four scalar/vector
+                // inputs (ek, ePot, UcrossB, dotTerm) were already
+                // confirmed finite here by checkEPotInputsFinite.H: if
+                // the assembled source() is bad anyway, the problem is in
+                // the discretisation geometry (volume, face areas,
+                // owner/neighbour addressing, interpolation weights),
+                // none of which are registered fields the earlier
+                // (now-removed) blastAMR-side diagnostics could see.
+                Pout<< "[checkEPotEqnFinite] FORENSIC DUMP cell=" << celli
+                    << " proc=" << Pstream::myProcNo()
+                    << " nEM=" << nEM
+                    << " time=" << runTime.timeName()
+                    << nl
+                    << "  V=" << mesh.V()[celli]
+                    << " C=" << mesh.C()[celli]
+                    << " ek=" << ek[celli]
+                    << " ePot=" << ePot[celli]
+                    << " UcrossB=" << UcrossB[celli]
+                    << " dotTerm=" << dotTerm[celli]
+                    << endl;
+
+                const cell& c = mesh.cells()[celli];
+                const label nInternalFaces = mesh.nInternalFaces();
+                forAll(c, fi)
+                {
+                    const label facei = c[fi];
+                    const bool isInternal = facei < nInternalFaces;
+                    const label own = mesh.faceOwner()[facei];
+
+                    Pout<< "  face=" << facei
+                        << " internal=" << isInternal
+                        << " owner=" << own
+                        << " magSf=" << mag(mesh.faceAreas()[facei])
+                        << " Cf=" << mesh.faceCentres()[facei];
+
+                    if (isInternal)
+                    {
+                        const label nei = mesh.faceNeighbour()[facei];
+                        Pout<< " neighbour=" << nei
+                            << " deltaCoeffs=" << mesh.deltaCoeffs()[facei]
+                            << " weights=" << mesh.weights()[facei]
+                            << " V_owner=" << mesh.V()[own]
+                            << " V_neighbour=" << mesh.V()[nei]
+                            << " ek_owner=" << ek[own]
+                            << " ek_neighbour=" << ek[nei]
+                            << endl;
+                    }
+                    else
+                    {
+                        const label patchi =
+                            mesh.boundaryMesh().whichPatch(facei);
+                        const label patchFacei =
+                            facei - mesh.boundary()[patchi].start();
+                        Pout<< " patch=" << mesh.boundary()[patchi].name()
+                            << " patchType="
+                            << mesh.boundary()[patchi].type()
+                            << " patchFacei=" << patchFacei
+                            << " ek_boundary="
+                            << ek.boundaryField()[patchi][patchFacei]
+                            << endl;
+                    }
+                }
+
                 FatalErrorInFunction
                     << "Non-finite ePotEqn.source() [" << checkEPotEqnStage
                     << "] at cell " << celli
