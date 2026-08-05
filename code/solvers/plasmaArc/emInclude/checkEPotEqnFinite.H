@@ -146,13 +146,36 @@
                             mesh.boundaryMesh().whichPatch(facei);
                         const label patchFacei =
                             facei - mesh.boundary()[patchi].start();
+                        const polyPatch& pp = mesh.boundaryMesh()[patchi];
+
                         Pout<< " patch=" << mesh.boundary()[patchi].name()
-                            << " patchType="
-                            << mesh.boundary()[patchi].type()
+                            << " patchType=" << pp.type()
                             << " patchFacei=" << patchFacei
                             << " ek_boundary="
                             << ek.boundaryField()[patchi][patchFacei]
-                            << endl;
+                            // deltaCoeffs/weights/non-orthogonal correction
+                            // are also defined on boundary (incl. processor)
+                            // faces - fvm::laplacian uses them there too,
+                            // and they were missing from the first version
+                            // of this dump.
+                            << " deltaCoeffs="
+                            << mesh.deltaCoeffs().boundaryField()[patchi][patchFacei]
+                            << " nonOrthDeltaCoeffs="
+                            << mesh.nonOrthDeltaCoeffs().boundaryField()[patchi][patchFacei]
+                            << " nonOrthCorrVec="
+                            << mesh.nonOrthCorrectionVectors().boundaryField()[patchi][patchFacei]
+                            << " weights="
+                            << mesh.weights().boundaryField()[patchi][patchFacei];
+
+                        if (isA<processorPolyPatch>(pp))
+                        {
+                            const auto& procPatch =
+                                refCast<const processorPolyPatch>(pp);
+                            Pout<< " myProcNo=" << procPatch.myProcNo()
+                                << " neighbProcNo=" << procPatch.neighbProcNo();
+                        }
+
+                        Pout<< endl;
                     }
                 }
 

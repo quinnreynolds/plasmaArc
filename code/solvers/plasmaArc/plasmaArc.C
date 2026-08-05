@@ -52,6 +52,7 @@ Description
 #include "directionMixedFvPatchFields.H"
 #include "zeroGradientFvPatchField.H"
 #include "scalarLookup.H"
+#include "processorPolyPatch.H"
 
 #include <cmath>
 
