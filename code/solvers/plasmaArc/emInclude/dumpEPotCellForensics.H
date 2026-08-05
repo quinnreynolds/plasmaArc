@@ -98,6 +98,27 @@
             }
 
             Pout<< endl;
+
+            // ePot_boundary above is just the field's plain boundary
+            // VALUE. For a mixed-type BC (fixedLocationCurrentDensity on
+            // cathode included) fvm::laplacian's boundaryCoeffs()/
+            // internalCoeffs() are derived from refGrad()/refValue()/
+            // valueFraction() instead - separate internal state this
+            // dump never inspected until now.
+            const fvPatchScalarField& ePotPf = ePot.boundaryField()[patchi];
+            if (isA<mixedFvPatchScalarField>(ePotPf))
+            {
+                const auto& mpf = refCast<const mixedFvPatchScalarField>(ePotPf);
+                Pout<< "    ePot BC [" << ePotPf.type() << "] refGrad="
+                    << mpf.refGrad()[patchFacei]
+                    << " refValue=" << mpf.refValue()[patchFacei]
+                    << " valueFraction=" << mpf.valueFraction()[patchFacei]
+                    << " refGradSize=" << mpf.refGrad().size()
+                    << " refValueSize=" << mpf.refValue().size()
+                    << " valueFractionSize=" << mpf.valueFraction().size()
+                    << " patchSize=" << mesh.boundary()[patchi].size()
+                    << endl;
+            }
         }
     }
 

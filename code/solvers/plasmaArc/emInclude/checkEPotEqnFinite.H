@@ -193,6 +193,30 @@
                         << ", nEM=" << nEM
                         << ", time=" << runTime.timeName()
                         << endl;
+
+                    // internalCoeffs()/boundaryCoeffs() for a mixed-type
+                    // BC are derived from refGrad()/refValue()/
+                    // valueFraction(), not the field's plain boundary
+                    // value - dump that state directly here too, not
+                    // just when a matching source() cell also happens to
+                    // trigger the forensic dump.
+                    const fvPatchScalarField& ePotPf =
+                        ePot.boundaryField()[patchi];
+                    if (isA<mixedFvPatchScalarField>(ePotPf))
+                    {
+                        const auto& mpf =
+                            refCast<const mixedFvPatchScalarField>(ePotPf);
+                        Pout<< "  ePot BC [" << ePotPf.type()
+                            << "] refGrad=" << mpf.refGrad()[facei]
+                            << " refValue=" << mpf.refValue()[facei]
+                            << " valueFraction=" << mpf.valueFraction()[facei]
+                            << " refGradSize=" << mpf.refGrad().size()
+                            << " refValueSize=" << mpf.refValue().size()
+                            << " valueFractionSize="
+                            << mpf.valueFraction().size()
+                            << " patchSize=" << mesh.boundary()[patchi].size()
+                            << endl;
+                    }
                 }
             }
         }
