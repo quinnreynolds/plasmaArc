@@ -144,6 +144,13 @@ int main(int argc, char *argv[])
                 {
                     MRF.update();
 
+                    // Recompute the directionMixed valueFraction() tensors
+                    // for A from the current face normals: refinement,
+                    // unrefinement and load-balancing all change the set of
+                    // boundary faces, and this BC is otherwise only
+                    // initialised once before the time loop starts.
+                    #include "emInclude/setDirectionMixedBC.H"
+
                     if (correctPhi)
                     {
                         // Calculate absolute flux

@@ -71,12 +71,21 @@ fixedLocationCurrentDensityFvPatchScalarField
     currentDensity_(Function1<scalar>::New("currentDensity", dict)),
     referencePosition_(vector(dict.lookup("referencePosition")))
 {
+    // refValue() is never actually used in the field's own evaluation,
+    // since valueFraction() is always 0 below (this is a pure current-
+    // density/Neumann condition) - but mixedFvPatchField's
+    // gradientBoundaryCoeffs()/valueBoundaryCoeffs() compute
+    // lerp(refGrad_, deltaCoeffs*refValue_, valueFraction_), and
+    // 0*NaN == NaN in IEEE-754, so a zero weight does not protect
+    // against a genuinely uninitialised refValue_. Must still be
+    // explicitly initialised, matching the no-dict constructor above.
+    refValue() = Zero;
     refGrad() = Zero;
     valueFraction() = Zero;
 
-    fvPatchScalarField::operator = 
-    ( 
-        scalarField("value", dict, p.size()) 
+    fvPatchScalarField::operator =
+    (
+        scalarField("value", dict, p.size())
     );
 }
 
@@ -146,8 +155,8 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
     label nProcs = Pstream::nProcs();
     label myProcNo = Pstream::myProcNo();
 
-    const scalarField& ekPatch = patch().lookupPatchField<volScalarField, scalar>("ek"); 
-    const vectorField& posPatch = patch().Cf(); 
+    const scalarField& ekPatch = patch().lookupPatchField<volScalarField, scalar>("ek");
+    const vectorField& posPatch = patch().Cf();
     const scalarField distPatch(mag(posPatch - referencePosition_));
 
     scalarListList procDist(nProcs), procArea(nProcs);
@@ -163,7 +172,7 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         procLocalIndex[myProcNo][faceI] = faceI;
         procProc[myProcNo][faceI] = myProcNo;
     }
-    
+
     #if (OPENFOAM >= 2312)
         Pstream::gatherList(procDist);
         Pstream::broadcastList(procDist);
@@ -173,7 +182,7 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         Pstream::broadcastList(procLocalIndex);
         Pstream::gatherList(procProc);
         Pstream::broadcastList(procProc);
-    #else 
+    #else
         Pstream::gatherList(procDist);
         Pstream::scatterList(procDist);
         Pstream::gatherList(procArea);
@@ -193,13 +202,13 @@ void Foam::fixedLocationCurrentDensityFvPatchScalarField::updateCoeffs()
         faceLocalIndex.append(procLocalIndex[procI]);
         faceProc.append(procProc[procI]);
     }
-    SortableList<scalar> sortedDist(faceDist);  
+    SortableList<scalar> sortedDist(faceDist);
 
     scalar totalArea = mag(current) / currentDensity;
 
     scalar runningArea = 0;
-    
-    scalarField elPotenGradient(patch().size(), 0); 
+
+    scalarField elPotenGradient(patch().size(), 0);
 
     forAll(sortedDist, n)
     {
