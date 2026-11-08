@@ -4,16 +4,21 @@
     volScalarField qSourceSp(-ekSp * (j & j) / (ek * ek * thermo.Cp()));
     volScalarField qSourceSc((j & j) / ek - qSourceSp * he);
 
+    // Electrons carry enthalpy against the conventional current j, so the
+    // transporting flux is -j/Cp. The sign is kept in the flux (not on the
+    // matrix) so the convection scheme upwinds along the true transport
+    // direction.
     surfaceScalarField electronTransportPhi
     (
-      constantET * linearInterpolate(j / thermo.Cp()) & mesh.Sf()
+        "electronTransportPhi",
+      - constantET * linearInterpolate(j / thermo.Cp()) & mesh.Sf()
     );
 
     fvScalarMatrix EEqn
     (
         fvm::ddt(rho, he)
       + fvm::div(phi, he)
-      - fvm::div(electronTransportPhi, he)
+      + fvm::div(electronTransportPhi, he)
       + fvc::ddt(rho, K)
       + fvc::div(phi, K)
       + (
